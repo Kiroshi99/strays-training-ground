@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+  <title>Find Target Minigame</title>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <main id="game-wrap">
+
+    <div id="target-box">
+      <span id="target-label">FIND TARGET:</span>
+      <div id="target-sequence"></div>
+    </div>
+
+    <div id="grid-box"></div>
+
+    <div id="message-box">
+      Find the START of the target sequence
+    </div>
+
+    <div id="timer-line">
+      <div id="timer-fill"></div>
+    </div>
+
+    <div id="time-text">
+      Time: 20.0s
+    </div>
+
+    <div id="stats-row">
+      <div id="success-count">Success: 0</div>
+    </div>
+
+    <div id="time-settings">
+  <label for="time-input">GAME TIME</label>
+
+  <input
+    type="number"
+    id="time-input"
+    min="5"
+    max="300"
+    value="20"
+  />
+
+  <button id="start-btn">START</button>
+</div>
+
+  </main>
+
+  <script src="script.js"></script>
+
+</body>
+</html>

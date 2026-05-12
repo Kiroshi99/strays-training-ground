@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Memory Hack Minigame</title>
+
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+  <div id="game-wrapper">
+
+    <!-- SETTINGS -->
+
+    <div id="settings">
+
+      <label>
+        Time:
+        <input id="time-input" type="number" value="45" min="10" max="300">
+      </label>
+
+      <label>
+        Attempts:
+        <input id="attempts-input" type="number" value="16" min="1" max="99">
+      </label>
+
+      <button id="start-btn">
+        START
+      </button>
+
+    </div>
+
+    <!-- BOARD -->
+
+    <div id="game-board"></div>
+
+    <!-- INFO -->
+
+    <div id="info-box">
+
+      <div id="instructions">
+        Find all matching pairs. Click cards to flip them.
+      </div>
+
+      <div id="stats">
+        <span>Pairs: <b id="pairs">0 / 8</b></span>
+        <span>Attempts: <b id="attempts">0 / 16</b></span>
+      </div>
+
+    </div>
+
+    <!-- BAR -->
+
+    <div id="progress-bar">
+      <div id="progress-fill"></div>
+    </div>
+
+    <!-- TIMER -->
+
+    <div id="timer">
+      Time: 0.0s
+    </div>
+
+    <!-- RESULT -->
+
+    <div id="result-screen">
+
+      <h1 id="result-title"></h1>
+
+      <p id="result-text"></p>
+
+      <button onclick="restartGame()">
+        Play Again
+      </button>
+
+    </div>
+
+  </div>
+
+  <script src="script.js"></script>
+
+</body>
+</html>
