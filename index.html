@@ -13,122 +13,69 @@
   </title>
 
   <style>
-
     * {
       box-sizing: border-box;
     }
 
     body {
       margin: 0;
-
       font-family: Arial, sans-serif;
-
       background: #0d0d0d;
-
       color: white;
-
       overflow: hidden;
     }
 
-    /* ===== TITLE ===== */
-
     h1 {
       margin: 0;
-
       padding: 20px;
-
       text-align: center;
-
       background: #111;
-
       border-bottom: 2px solid #222;
-
       color: #00d9ff;
-
       letter-spacing: 2px;
-
       text-shadow:
         0 0 10px #00d9ff,
         0 0 25px rgba(0,217,255,0.45);
     }
 
-    /* ===== NAVIGATION ===== */
-
     #navigation {
       display: flex;
-
       flex-wrap: wrap;
-
       justify-content: center;
-
       gap: 12px;
-
       padding: 18px;
-
       background: #151515;
-
       border-bottom: 2px solid #222;
     }
 
     button {
       padding: 12px 20px;
-
       font-size: 15px;
-
-      border: none;
-
-      border-radius: 8px;
-
-      cursor: pointer;
-
-      background:
-        linear-gradient(
-          180deg,
-          #1f1f1f,
-          #111
-        );
-
-      color: white;
-
-      transition: 0.2s ease;
-
       border: 1px solid #333;
+      border-radius: 8px;
+      cursor: pointer;
+      background: linear-gradient(180deg, #1f1f1f, #111);
+      color: white;
+      transition: 0.2s ease;
     }
 
     button:hover {
-      background:
-        linear-gradient(
-          135deg,
-          #00d9ff,
-          #00ffb7
-        );
-
+      background: linear-gradient(135deg, #00d9ff, #00ffb7);
       color: black;
-
       transform: scale(1.05);
-
       box-shadow:
         0 0 12px #00d9ff,
         0 0 22px rgba(0,255,183,0.45);
     }
 
-    /* ===== GAME AREA ===== */
-
     #game-container {
       width: 100%;
-
       height: calc(100vh - 150px);
-
       display: flex;
-
       justify-content: center;
-
       align-items: center;
-
       padding: 12px;
-
       position: relative;
-
       background:
         radial-gradient(
           circle at center,
@@ -139,59 +86,41 @@
 
     iframe {
       width: 95%;
-
       height: 100%;
-
       border: 2px solid #333;
-
       border-radius: 12px;
-
       background: black;
-
-      box-shadow:
-        0 0 20px rgba(0,0,0,0.6);
-
+      box-shadow: 0 0 20px rgba(0,0,0,0.6);
       transition: 0.2s ease;
-
       display: none;
     }
 
-    /* ===== WELCOME TEXT ===== */
-
     #welcome-text {
       position: absolute;
-
       font-size: 22px;
-
       color: #555;
-
       pointer-events: none;
-
       user-select: none;
-
       letter-spacing: 2px;
-
-      text-shadow:
-        0 0 12px rgba(255,255,255,0.08);
+      text-shadow: 0 0 12px rgba(255,255,255,0.08);
     }
-
   </style>
 </head>
 
 <body>
 
-  <!-- ===== TITLE ===== -->
-
   <h1>
     Strays's Training Ground
   </h1>
-
-  <!-- ===== NAVIGATION ===== -->
 
   <div id="navigation">
 
     <button onclick="loadGame('4 digit PIN guess/index.html')">
       🔐 4 Digit PIN Guess
+    </button>
+
+    <button onclick="loadGame('Follow the moving circle/index.html')">
+      🎯 Follow the Moving Circle
     </button>
 
     <button onclick="loadGame('Keyboard Reflex minigame/index.html')">
@@ -212,8 +141,6 @@
 
   </div>
 
-  <!-- ===== GAME DISPLAY ===== -->
-
   <div id="game-container">
 
     <div id="welcome-text">
@@ -228,25 +155,15 @@
 
   </div>
 
-  <!-- ===== SCRIPT ===== -->
-
   <script>
-
     function loadGame(path) {
-
-      const frame =
-        document.getElementById("game-frame");
-
-      const welcome =
-        document.getElementById("welcome-text");
+      const frame = document.getElementById("game-frame");
+      const welcome = document.getElementById("welcome-text");
 
       frame.src = path;
-
       frame.style.display = "block";
-
       welcome.style.display = "none";
     }
-
   </script>
 
 </body>
