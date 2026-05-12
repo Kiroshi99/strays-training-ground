@@ -152,6 +152,8 @@
         0 0 20px rgba(0,0,0,0.6);
 
       transition: 0.2s ease;
+
+      display: none;
     }
 
     /* ===== WELCOME TEXT ===== */
@@ -192,10 +194,6 @@
       🔐 4 Digit PIN Guess
     </button>
 
-    <button onclick="loadGame('Follow the moving circle/index.html')">
-      🎯 Follow the Moving Circle
-    </button>
-
     <button onclick="loadGame('Keyboard Reflex minigame/index.html')">
       ⌨️ Keyboard Reflex
     </button>
@@ -207,8 +205,6 @@
     <button onclick="loadGame('Tracer/index.html')">
       ⚡ Tracer
     </button>
-
-    <!-- ===== MEMORY GAME ===== -->
 
     <button onclick="loadGame('Memory/index.html')">
       🧠 Memory Hack
@@ -245,6 +241,8 @@
         document.getElementById("welcome-text");
 
       frame.src = path;
+
+      frame.style.display = "block";
 
       welcome.style.display = "none";
     }
