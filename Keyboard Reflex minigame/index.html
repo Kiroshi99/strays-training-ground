@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Musang's Training Ground</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <div id="game-container">
+
+    <div id="difficulty-container">
+      <button class="difficulty-btn active" data-difficulty="easy">Easy</button>
+      <button class="difficulty-btn" data-difficulty="hard">Hard</button>
+      <button class="difficulty-btn" data-difficulty="extreme">Extreme</button>
+      <button id="play-button">Play</button>
+    </div>
+
+    <div id="loading-screen">
+      <p>Pattern recognition required... Ready...</p>
+    </div>
+
+    <div id="score-container">
+      <span id="score-display">Score: 0</span>
+      <span id="timer-display">Time: 0s</span>
+    </div>
+
+    <div id="game-area">
+      <div id="target-bar"></div>
+      <div id="letters-area"></div>
+    </div>
+
+    <button id="restart-button">Restart</button>
+
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
