@@ -2,137 +2,40 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Leopardo's Training Ground</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <style>
-    * {
-      box-sizing: border-box;
-    }
+  <title>Follow the Moving Circle</title>
 
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #0d0d0d;
-      color: white;
-      overflow: hidden;
-    }
-
-    h1 {
-      margin: 0;
-      padding: 20px;
-      text-align: center;
-      background: #111;
-      border-bottom: 2px solid #222;
-      color: #00d9ff;
-      letter-spacing: 2px;
-      text-shadow: 0 0 10px #00d9ff;
-    }
-
-    #navigation {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 12px;
-      padding: 18px;
-      background: #151515;
-      border-bottom: 2px solid #222;
-    }
-
-    button {
-      padding: 12px 20px;
-      font-size: 15px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      background: #1f1f1f;
-      color: white;
-      transition: 0.2s ease;
-      border: 1px solid #333;
-    }
-
-    button:hover {
-      background: #00d9ff;
-      color: black;
-      transform: scale(1.05);
-      box-shadow: 0 0 12px #00d9ff;
-    }
-
-    #game-container {
-      width: 100%;
-      height: calc(100vh - 150px);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 12px;
-      background:
-        radial-gradient(circle at center, #1a1a1a 0%, #050505 100%);
-    }
-
-    iframe {
-      width: 95%;
-      height: 100%;
-      border: 2px solid #333;
-      border-radius: 12px;
-      background: black;
-      box-shadow: 0 0 20px rgba(0,0,0,0.6);
-    }
-
-    #welcome-text {
-      position: absolute;
-      font-size: 22px;
-      color: #555;
-      pointer-events: none;
-      user-select: none;
-      letter-spacing: 2px;
-    }
-  </style>
+  <link rel="stylesheet" href="style.css" />
 </head>
-
 <body>
 
-  <h1>Strays's Training Ground</h1>
+  <div id="game-wrapper">
 
-  <div id="navigation">
-
-    <button onclick="loadGame('4 digit PIN guess/index.html')">
-      🔐 4 Digit PIN Guess
-    </button>
-
-    <button onclick="loadGame('Follow the moving circle/index.html')">
-      🎯 Follow the Moving Circle
-    </button>
-
-    <button onclick="loadGame('Keyboard Reflex minigame/index.html')">
-      ⌨️ Keyboard Reflex
-    </button>
-
-    <button onclick="loadGame('Hit the dots/index.html')">
-      🔥 Hit the Dots
-    </button>
-
-  </div>
-
-  <div id="game-container">
-
-    <div id="welcome-text">
-      SELECT A TRAINING MODULE
+    <div id="top-bar">
+      <div id="title">FOLLOW THE SIGNAL</div>
+      <div id="timer">Time: 0.0s</div>
     </div>
 
-    <iframe id="game-frame" src=""></iframe>
+    <div id="instruction">
+      Keep your cursor inside the neon orb. Do not leave the signal radius.
+    </div>
+
+    <canvas id="gameCanvas"></canvas>
+
+    <div id="status">
+      <span id="status-light"></span>
+      SIGNAL LOCK READY
+    </div>
+
+    <div id="game-over-screen">
+      <h1>TRACE LOST</h1>
+      <p id="final-time">You survived for 0.0 seconds.</p>
+      <button onclick="restartGame()">RETRY</button>
+    </div>
 
   </div>
 
-  <script>
-    function loadGame(path) {
-      const frame = document.getElementById('game-frame');
-      const welcome = document.getElementById('welcome-text');
-
-      frame.src = path;
-
-      welcome.style.display = "none";
-    }
-  </script>
-
+  <script src="script.js"></script>
 </body>
 </html>
