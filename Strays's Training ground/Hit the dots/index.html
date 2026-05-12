@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hit the Dots</title>
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+  <div id="game-box">
+
+    <div id="top-bar">
+      <span id="hits">HITS: 0/14</span>
+      <span id="missed">MISSED: 0/3</span>
+    </div>
+
+    <div id="difficulty-container">
+
+      <button class="difficulty-btn" data-difficulty="easy">
+        Easy
+      </button>
+
+      <button class="difficulty-btn active" data-difficulty="medium">
+        Medium
+      </button>
+
+      <button class="difficulty-btn" data-difficulty="hard">
+        Hard
+      </button>
+
+      <button class="difficulty-btn" data-difficulty="extreme">
+        Extreme
+      </button>
+
+    </div>
+
+    <div id="game-area">
+      <div id="target"></div>
+    </div>
+
+    <div id="message">
+      Click the targets before they disappear!
+    </div>
+
+    <div id="progress-bar">
+      <div id="progress"></div>
+    </div>
+
+    <button id="start-btn">
+      START
+    </button>
+
+  </div>
+
+  <script src="script.js"></script>
+
+</body>
+</html>
