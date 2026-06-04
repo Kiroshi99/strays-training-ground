@@ -2,7 +2,6 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-
   <meta
     name="viewport"
     content="width=device-width, initial-scale=1.0"
@@ -13,6 +12,7 @@
   </title>
 
   <style>
+
     * {
       box-sizing: border-box;
     }
@@ -51,18 +51,33 @@
     button {
       padding: 12px 20px;
       font-size: 15px;
-      border: 1px solid #333;
+      border: none;
       border-radius: 8px;
       cursor: pointer;
-      background: linear-gradient(180deg, #1f1f1f, #111);
+      background:
+        linear-gradient(
+          180deg,
+          #1f1f1f,
+          #111
+        );
+
       color: white;
       transition: 0.2s ease;
+      border: 1px solid #333;
     }
 
     button:hover {
-      background: linear-gradient(135deg, #00d9ff, #00ffb7);
+      background:
+        linear-gradient(
+          135deg,
+          #00d9ff,
+          #00ffb7
+        );
+
       color: black;
+
       transform: scale(1.05);
+
       box-shadow:
         0 0 12px #00d9ff,
         0 0 22px rgba(0,255,183,0.45);
@@ -76,6 +91,7 @@
       align-items: center;
       padding: 12px;
       position: relative;
+
       background:
         radial-gradient(
           circle at center,
@@ -90,9 +106,9 @@
       border: 2px solid #333;
       border-radius: 12px;
       background: black;
-      box-shadow: 0 0 20px rgba(0,0,0,0.6);
-      transition: 0.2s ease;
-      display: none;
+
+      box-shadow:
+        0 0 20px rgba(0,0,0,0.6);
     }
 
     #welcome-text {
@@ -102,8 +118,11 @@
       pointer-events: none;
       user-select: none;
       letter-spacing: 2px;
-      text-shadow: 0 0 12px rgba(255,255,255,0.08);
+
+      text-shadow:
+        0 0 12px rgba(255,255,255,0.08);
     }
+
   </style>
 </head>
 
@@ -139,6 +158,14 @@
       🧠 Memory Hack
     </button>
 
+    <button onclick="loadGame('Shapes Sequence/index.html')">
+      🔷 Shapes Sequence
+    </button>
+
+    <button onclick="loadGame('Key taps/index.html')">
+      🟦 Key Taps
+    </button>
+
   </div>
 
   <div id="game-container">
@@ -156,14 +183,20 @@
   </div>
 
   <script>
+
     function loadGame(path) {
-      const frame = document.getElementById("game-frame");
-      const welcome = document.getElementById("welcome-text");
+
+      const frame =
+        document.getElementById("game-frame");
+
+      const welcome =
+        document.getElementById("welcome-text");
 
       frame.src = path;
-      frame.style.display = "block";
+
       welcome.style.display = "none";
     }
+
   </script>
 
 </body>

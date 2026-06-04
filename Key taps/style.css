@@ -1,0 +1,323 @@
+* {
+  box-sizing: border-box; /* Makes padding/border included inside width/height */
+}
+
+:root {
+  --key-size: 70px; /* Size of the bottom and completed key boxes */
+  --middle-key-size: 82px; /* Size of the bigger centre key box */
+}
+
+body {
+  margin: 0; /* Removes default browser spacing */
+  min-height: 100vh; /* Makes page full screen height */
+  background: #050b16; /* Main dark blue background */
+  color: white; /* Default text colour */
+  font-family: "Courier New", monospace; /* Terminal-style font */
+  display: flex; /* Enables centering */
+  justify-content: center; /* Centers game horizontally */
+  align-items: center; /* Centers game vertically */
+}
+
+.game {
+  width: 600px; /* Main game panel width */
+  padding: 20px; /* Space inside the game panel */
+  border: 1px solid #293a5c; /* Outer blue border */
+  border-radius: 14px; /* Rounded corners */
+  background: #070b19; /* Main panel background */
+  box-shadow:
+    0 0 35px rgba(116, 91, 255, 0.18), /* Outer purple glow */
+    inset 0 0 25px rgba(116, 91, 255, 0.08); /* Inner purple glow */
+}
+
+.title {
+  text-align: center; /* Centers title text */
+  font-size: 22px; /* Title text size */
+  font-weight: bold; /* Makes title bold */
+  letter-spacing: 5px; /* Spaces letters apart */
+  padding: 20px; /* Space inside title box */
+  color: #ffffff; /* Title text colour */
+  text-shadow: 0 0 8px #8f7cff; /* White/purple glow on title */
+  border: 1px solid #2a3c61; /* Title box border */
+  border-radius: 8px; /* Rounded title box */
+  background: #0b1326; /* Title box background */
+}
+
+.title span {
+  color: #ffd05c; /* Access restricted yellow colour */
+  text-shadow:
+    0 0 5px #ffd05c, /* Small yellow glow */
+    0 0 10px #ffb300, /* Medium yellow glow */
+    0 0 20px #ffb300; /* Bigger yellow glow */
+  animation: pulseRestricted 1.5s infinite; /* Makes access restricted pulse */
+}
+
+.controls {
+  margin-top: 15px; /* Space above buttons */
+  display: flex; /* Puts buttons in a row */
+  justify-content: center; /* Centers buttons */
+  gap: 10px; /* Space between buttons */
+}
+
+.controls button {
+  background: #0b1326; /* Button background */
+  color: white; /* Button text colour */
+  border: 1px solid #3b527c; /* Button border */
+  border-radius: 8px; /* Rounded button corners */
+  padding: 9px 14px; /* Button size spacing */
+  cursor: pointer; /* Shows hand cursor on hover */
+  font-weight: bold; /* Bold button text */
+  box-shadow: inset 0 0 12px rgba(138, 92, 255, 0.08); /* Inner purple glow */
+}
+
+.controls button:hover,
+.controls button.selected {
+  background: linear-gradient(90deg, #8a5cff, #5f7cff); /* Active/hover purple gradient */
+  box-shadow: 0 0 15px rgba(138, 92, 255, 0.7); /* Active/hover glow */
+}
+
+.screen {
+  height: 320px; /* Height of the play area */
+  margin-top: 20px; /* Space above play area */
+  border: 1px solid #8b83ff; /* Purple screen border */
+  border-radius: 14px; /* Rounded play area */
+  background: #102940; /* Blue screen background */
+  position: relative; /* Allows absolute positioning inside */
+  overflow: hidden; /* Keeps boxes inside screen */
+  box-shadow:
+    0 0 18px rgba(139, 131, 255, 0.55), /* Outer screen glow */
+    inset 0 0 45px rgba(73, 96, 255, 0.12); /* Inner screen glow */
+}
+
+/* Green completed keys above the centre key */
+.completed-row {
+  position: absolute; /* Positions inside .screen */
+  top: 18px; /* Distance from top of screen */
+  left: 0; /* Starts from left edge */
+  right: 0; /* Ends at right edge */
+  display: flex; /* Puts completed boxes in a row */
+  justify-content: center; /* Centers completed boxes */
+  gap: 10px; /* Space between completed boxes */
+  z-index: 5; /* Keeps completed keys above other elements */
+}
+
+.completed-key {
+  width: var(--key-size); /* Completed key width */
+  height: var(--key-size); /* Completed key height */
+  background: #063b16; /* Green box background */
+  border: 1px solid #00ff66; /* Green border */
+  border-radius: 5px; /* Slightly rounded box */
+  display: grid; /* Enables perfect centering */
+  place-items: center; /* Centers letter inside box */
+  color: #00ff66; /* Green letter */
+  font-size: 26px; /* Letter size */
+  font-weight: bold; /* Bold letter */
+  box-shadow:
+    0 0 18px rgba(0, 255, 102, 0.9), /* Green outer glow */
+    inset 0 0 14px rgba(0, 255, 102, 0.25); /* Green inner glow */
+  animation: completedPop 0.18s ease; /* Small pop animation */
+}
+
+/* Bigger centre key box */
+.current-key {
+  width: var(--middle-key-size); /* Centre key width */
+  height: var(--middle-key-size); /* Centre key height */
+  background: #06345d; /* Blue centre box background */
+  border: 5px solid #12456f; /* Blue centre box border */
+  border-radius: 5px; /* Slightly rounded box */
+  position: absolute; /* Places it inside .screen */
+  top: 150px; /* Vertical position of centre box */
+  left: 50%; /* Moves left edge to centre */
+  transform: translateX(-50%); /* Perfectly centres the box */
+  display: grid; /* Enables perfect centering */
+  place-items: center; /* Centers the letter */
+  font-size: 34px; /* Centre letter size */
+  font-weight: bold; /* Bold centre letter */
+  color: #ffffff; /* White letter */
+  box-shadow:
+    0 0 20px rgba(124, 97, 255, 0.55), /* Purple outer glow */
+    inset 0 0 20px rgba(124, 97, 255, 0.18); /* Purple inner glow */
+  transition: 0.2s ease; /* Smooth colour/glow change */
+}
+
+.current-key.correct-flash {
+  color: #00ff66; /* Turns centre letter green when correct */
+  background: #063b16; /* Turns centre box green when correct */
+  border-color: #00ff66; /* Green border when correct */
+  box-shadow:
+    0 0 20px rgba(0, 255, 102, 0.9), /* Green outer glow */
+    inset 0 0 18px rgba(0, 255, 102, 0.25); /* Green inner glow */
+}
+
+/* Bottom queue keys */
+.key-row {
+  position: absolute; /* Positions row inside .screen */
+  bottom: 0; /* Sticks row to bottom of screen */
+  left: 0; /* Starts from left */
+  right: 0; /* Ends at right */
+  display: flex; /* Puts keys in a row */
+  justify-content: center; /* Centers bottom keys */
+  gap: 10px; /* Space between bottom keys */
+}
+
+.key-box {
+  width: var(--key-size); /* Bottom key width */
+  height: var(--key-size); /* Bottom key height */
+  background: #071827; /* Dark blue key background */
+  border: 1px solid #12334d; /* Key border */
+  border-radius: 5px; /* Slightly rounded box */
+  display: grid; /* Enables perfect centering */
+  place-items: center; /* Centers letter */
+  color: #d9d8ff; /* Bottom key letter colour */
+  font-size: 26px; /* Bottom letter size */
+  font-weight: bold; /* Bold bottom letter */
+  box-shadow: inset 0 0 12px rgba(112, 91, 255, 0.08); /* Inner glow */
+}
+
+.status {
+  margin-top: 18px; /* Space above status box */
+  padding: 14px; /* Space inside status box */
+  border: 1px solid #2d4068; /* Status border */
+  border-radius: 8px; /* Rounded status corners */
+  background: #0a1021; /* Status background */
+  display: flex; /* Puts text side by side */
+  justify-content: space-between; /* Pushes text apart */
+  font-weight: bold; /* Bold status text */
+  box-shadow: inset 0 0 15px rgba(116, 91, 255, 0.08); /* Inner glow */
+}
+
+.sequence-count {
+  color: #00f7ff; /* Cyan sequence text */
+  font-size: 18px; /* Sequence text size */
+  text-shadow: 0 0 10px #00f7ff; /* Cyan glow */
+}
+
+.timer-bar {
+  margin-top: 16px; /* Space above timer bar */
+  height: 8px; /* Timer bar height */
+  border-radius: 20px; /* Rounded timer bar */
+  background: #182035; /* Empty timer background */
+  overflow: hidden; /* Keeps timer fill inside */
+}
+
+#timerFill {
+  height: 100%; /* Fill takes full timer height */
+  width: 100%; /* Starts full width */
+  background: linear-gradient(90deg, #8a5cff, #00eaff); /* Purple to cyan timer */
+  border-radius: 20px; /* Rounded fill */
+  box-shadow: 0 0 12px #00eaff; /* Cyan timer glow */
+}
+
+.timer-text {
+  text-align: center; /* Centers time text */
+  margin-top: 11px; /* Space above time text */
+  font-size: 16px; /* Time text size */
+  font-weight: bold; /* Bold time text */
+  color: #ffffff; /* White time text */
+  text-shadow: 0 0 7px #8a5cff; /* Purple glow */
+}
+
+.stages {
+  margin-top: 20px; /* Space above sequence stage box */
+  height: 60px; /* Stage panel height */
+  border: 1px solid #2d4068; /* Stage panel border */
+  border-radius: 9px; /* Rounded stage panel */
+  background: #0a1021; /* Stage panel background */
+  display: grid; /* Grid layout */
+  grid-template-columns: repeat(3, 1fr); /* 3 equal columns */
+  align-items: center; /* Vertically centers stage text */
+  text-align: center; /* Centers stage text */
+  color: #d9d8ff; /* Stage text colour */
+  font-size: 12px; /* Stage text size */
+}
+
+.stage::before {
+  content: ""; /* Creates small square indicator */
+  width: 13px; /* Indicator width */
+  height: 13px; /* Indicator height */
+  display: block; /* Makes indicator block element */
+  margin: 0 auto 7px; /* Centers indicator above text */
+  background: #252b3c; /* Inactive indicator colour */
+  border-radius: 3px; /* Slightly rounded indicator */
+}
+
+.stage.active::before {
+  background: #00f7ff; /* Active indicator cyan */
+  box-shadow: 0 0 16px #00f7ff; /* Active indicator glow */
+}
+
+.instructions {
+  margin-top: 15px; /* Space above instructions */
+  padding: 17px; /* Space inside instructions */
+  text-align: center; /* Centers instruction text */
+  background: #061b33; /* Instruction panel background */
+  border-radius: 8px; /* Rounded instruction panel */
+  color: #d6edff; /* Instruction text colour */
+  font-size: 12px; /* Instruction text size */
+  line-height: 2; /* Spacing between lines */
+  box-shadow: inset 0 0 18px rgba(0, 247, 255, 0.08); /* Inner cyan glow */
+}
+
+.instructions span {
+  color: #00f7ff; /* Cyan key list */
+  font-size: 14px; /* Key list size */
+  font-weight: bold; /* Bold key list */
+  text-shadow: 0 0 8px #00f7ff; /* Cyan glow */
+}
+
+/* Wrong key or timeout red effect */
+.game.wrong {
+  border-color: #ff3b3b; /* Turns outer border red */
+  box-shadow:
+    0 0 35px rgba(255, 50, 50, 0.45), /* Red outer glow */
+    inset 0 0 30px rgba(255, 50, 50, 0.12); /* Red inner glow */
+}
+
+.game.wrong .screen,
+.game.wrong .current-key {
+  border-color: #ff3b3b; /* Turns screen/current key border red */
+  box-shadow:
+    0 0 25px rgba(255, 50, 50, 0.8), /* Strong red glow */
+    inset 0 0 25px rgba(255, 50, 50, 0.18); /* Red inner glow */
+}
+
+.game.wrong .current-key,
+.game.wrong .sequence-count,
+.game.wrong .timer-text {
+  color: #ff4b4b; /* Turns key/sequence/time text red */
+  text-shadow: 0 0 12px #ff3b3b; /* Red text glow */
+}
+
+.game.wrong #timerFill {
+  background: #ff2f2f; /* Red timer fill */
+  box-shadow: 0 0 15px #ff2f2f; /* Red timer glow */
+}
+
+@keyframes pulseRestricted {
+  0% {
+    opacity: 0.5; /* Dim state */
+  }
+
+  50% {
+    opacity: 1; /* Bright state */
+    text-shadow:
+      0 0 8px #ffd05c, /* Bright yellow glow */
+      0 0 15px #ffb300, /* Strong yellow glow */
+      0 0 25px #ff8800; /* Orange outer glow */
+  }
+
+  100% {
+    opacity: 0.5; /* Returns to dim state */
+  }
+}
+
+@keyframes completedPop {
+  from {
+    transform: translateY(35px) scale(0.8); /* Starts lower and smaller */
+    opacity: 0; /* Starts invisible */
+  }
+
+  to {
+    transform: translateY(0) scale(1); /* Ends normal position and size */
+    opacity: 1; /* Ends visible */
+  }
+}

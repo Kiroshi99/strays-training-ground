@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Backdoor Sequence</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <div class="game">
+    <div class="title">
+      BACKDOOR SEQUENCE <span>[ACCESS RESTRICTED]</span>
+    </div>
+
+    <div class="screen">
+      <div id="currentKey" class="current-key">E</div>
+
+      <div id="keyRow" class="key-row"></div>
+    </div>
+
+    <div class="status">
+      <div class="sequence-count">SEQUENCES: <span id="sequenceText">1/3</span></div>
+      <div>Input the sequence to break the encryption</div>
+    </div>
+
+    <div class="timer-bar">
+      <div id="timerFill"></div>
+    </div>
+
+    <div class="timer-text">
+      Time: <span id="timeText">8.5s</span>
+    </div>
+
+    <div class="stages">
+      <div class="stage active">SEQ-01</div>
+      <div class="stage">SEQ-02</div>
+      <div class="stage">SEQ-03</div>
+    </div>
+
+    <div class="instructions">
+      PRESS KEYS SHOWN IN SEQUENCE<br>
+      <span>Q, W, E, A, S, D, F</span>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

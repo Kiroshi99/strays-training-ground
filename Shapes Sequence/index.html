@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shape Target Game</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="panel">
+    <div class="target-box">
+      <span class="label">FIND TARGET:</span>
+      <div id="targetDisplay" class="target-display"></div>
+    </div>
+
+    <div id="grid" class="grid"></div>
+
+    <div id="message" class="message">
+      Choose time and press START
+    </div>
+
+    <div class="timer-area">
+      <div class="timer-bar">
+        <div id="timerFill" class="timer-fill"></div>
+      </div>
+      <div class="timer-text">Time: <span id="timerText">0.0s</span></div>
+    </div>
+
+    <div class="success-box">
+      Success: <span id="successCount">0</span>
+    </div>
+
+    <div class="controls">
+      <label for="gameTime">GAME TIME</label>
+      <input id="gameTime" type="number" value="15" min="5" max="60" />
+      <button id="startBtn">START</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
