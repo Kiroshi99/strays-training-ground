@@ -133,7 +133,7 @@ function svgShape(type) {
 
     "diamond-small-filled": `
       <svg viewBox="0 0 100 100">
-        <polygon points="50,28 72,50 50,72 28,50" fill="${colour}"/>
+        <polygon points="50,28 72,50 50,72 28,50" ${fill}/>
       </svg>`,
 
     "diamond-double-outline": `
@@ -186,7 +186,7 @@ function svgShape(type) {
 
     "oval-small-filled": `
       <svg viewBox="0 0 100 100">
-        <ellipse cx="50" cy="50" rx="24" ry="12" fill="${colour}"/>
+        <ellipse cx="50" cy="50" rx="24" ry="12" ${fill}/>
       </svg>`,
 
     "oval-vertical-filled": `
@@ -234,7 +234,10 @@ function generateTargets() {
 
   while (targets.length < 3) {
     const shape = randomShape();
-    if (!targets.includes(shape)) targets.push(shape);
+
+    if (!targets.includes(shape)) {
+      targets.push(shape);
+    }
   }
 }
 
@@ -245,7 +248,12 @@ function generateGrid() {
     gridData.push(randomShape());
   }
 
-  const startIndex = selectorRow * 8 + selectorCol;
+  // Random target sequence location
+  const targetRow = Math.floor(Math.random() * 8);
+  const targetCol = Math.floor(Math.random() * 6);
+
+  const startIndex = targetRow * 8 + targetCol;
+
   gridData[startIndex] = targets[0];
   gridData[startIndex + 1] = targets[1];
   gridData[startIndex + 2] = targets[2];
@@ -274,8 +282,13 @@ function renderGrid() {
   const selector = document.createElement("div");
   selector.className = "selector-box";
 
-  if (selectorState === "correct") selector.classList.add("selector-correct");
-  if (selectorState === "wrong") selector.classList.add("selector-wrong");
+  if (selectorState === "correct") {
+    selector.classList.add("selector-correct");
+  }
+
+  if (selectorState === "wrong") {
+    selector.classList.add("selector-wrong");
+  }
 
   selector.style.left = `${gridPadding + selectorCol * (cellSize + gap)}px`;
   selector.style.top = `${gridPadding + selectorRow * (cellSize + gap)}px`;
@@ -288,10 +301,21 @@ function moveSelector(direction) {
 
   selectorState = "normal";
 
-  if (direction === "up" && selectorRow > 0) selectorRow--;
-  if (direction === "down" && selectorRow < 7) selectorRow++;
-  if (direction === "left" && selectorCol > 0) selectorCol--;
-  if (direction === "right" && selectorCol < 5) selectorCol++;
+  if (direction === "up" && selectorRow > 0) {
+    selectorRow--;
+  }
+
+  if (direction === "down" && selectorRow < 7) {
+    selectorRow++;
+  }
+
+  if (direction === "left" && selectorCol > 0) {
+    selectorCol--;
+  }
+
+  if (direction === "right" && selectorCol < 5) {
+    selectorCol++;
+  }
 
   renderGrid();
 }
@@ -394,8 +418,9 @@ function startGame() {
   gameOver = false;
   selectorState = "normal";
 
-  selectorRow = 4;
-  selectorCol = 3;
+  // Random selector start position every game
+  selectorRow = Math.floor(Math.random() * 8);
+  selectorCol = Math.floor(Math.random() * 6);
 
   generateTargets();
   generateGrid();
@@ -409,19 +434,34 @@ function startGame() {
   startTimer();
 }
 
-document.addEventListener("keydown", (event) => {
+document.addEventListener("keydown", event => {
   const key = event.key.toLowerCase();
 
-  if (key === "arrowup" || key === "w") moveSelector("up");
-  if (key === "arrowdown" || key === "s") moveSelector("down");
-  if (key === "arrowleft" || key === "a") moveSelector("left");
-  if (key === "arrowright" || key === "d") moveSelector("right");
+  if (key === "arrowup" || key === "w") {
+    moveSelector("up");
+  }
 
-  if (key === "enter" || key === " ") checkSelection();
+  if (key === "arrowdown" || key === "s") {
+    moveSelector("down");
+  }
+
+  if (key === "arrowleft" || key === "a") {
+    moveSelector("left");
+  }
+
+  if (key === "arrowright" || key === "d") {
+    moveSelector("right");
+  }
+
+  if (key === "enter" || key === " ") {
+    event.preventDefault();
+    checkSelection();
+  }
 });
 
 startBtn.addEventListener("click", startGame);
 
+// Initial display before pressing START
 generateTargets();
 generateGrid();
 renderTargets();
