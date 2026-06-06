@@ -10,7 +10,7 @@
   --neon-pink: #ff1493;
   --neon-orange: #ff9d00;
 
-  --dial-size: min(68vw, 320px);
+  --dial-size: min(68vw, 360px);
 
   /*
     Shared orbit radius for BOTH:
@@ -20,7 +20,7 @@
     Bigger = further outside
     Smaller = closer to centre
   */
-  --target-radius: 132px;
+  --target-radius: 130px;
 
   /* Orange target circle size */
   --dot-size: 50px;
