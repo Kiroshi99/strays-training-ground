@@ -1,4 +1,4 @@
-const allowedKeys = ["Q", "W", "E", "A", "S", "D", "F"];
+const allowedKeys = ["Q", "W", "E", "A", "S", "D", "F", "G", "H", "J"];
 
 let difficulty = "medium";
 
