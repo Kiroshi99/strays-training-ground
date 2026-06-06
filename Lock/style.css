@@ -1,0 +1,428 @@
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  --bg-main: #02050b;
+
+  --neon-cyan: #00f5ff;
+  --neon-purple: #8b5cff;
+  --neon-pink: #ff1493;
+  --neon-orange: #ff9d00;
+
+  --dial-size: min(68vw, 320px);
+
+  /*
+    Shared orbit radius for BOTH:
+    - orange target circle centre
+    - pink bar centre
+
+    Bigger = further outside
+    Smaller = closer to centre
+  */
+  --target-radius: 132px;
+
+  /* Orange target circle size */
+  --dot-size: 50px;
+
+  /* Pink bar size */
+  --line-width: 13px;
+  --line-height: 60px;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+
+  background:
+    radial-gradient(circle at 20% 20%, rgba(139, 92, 255, 0.18), transparent 32%),
+    radial-gradient(circle at 80% 15%, rgba(0, 245, 255, 0.14), transparent 35%),
+    radial-gradient(circle at 50% 100%, rgba(0, 255, 170, 0.08), transparent 38%),
+    linear-gradient(135deg, #05000d 0%, #02050b 45%, #001b1d 100%);
+
+  display: grid;
+  place-items: center;
+
+  font-family: Arial, Helvetica, sans-serif;
+  color: white;
+  overflow: hidden;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+
+  background-image:
+    linear-gradient(rgba(0, 245, 255, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 245, 255, 0.045) 1px, transparent 1px);
+
+  background-size: 34px 34px;
+  pointer-events: none;
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle, transparent 40%, rgba(0, 0, 0, 0.55) 100%);
+  pointer-events: none;
+}
+
+.game {
+  position: relative;
+  z-index: 2;
+
+  width: min(94vw, 500px);
+  padding: 28px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+
+  user-select: none;
+
+  background:
+    linear-gradient(180deg, rgba(12, 18, 38, 0.95), rgba(3, 7, 17, 0.96));
+
+  border: 1px solid rgba(0, 245, 255, 0.22);
+  border-radius: 18px;
+
+  box-shadow:
+    0 0 24px rgba(0, 245, 255, 0.12),
+    0 0 70px rgba(139, 92, 255, 0.12),
+    inset 0 0 30px rgba(0, 245, 255, 0.045);
+}
+
+.top-level {
+  width: 100%;
+  padding: 12px 18px;
+  margin-bottom: 16px;
+
+  border: 1px solid rgba(0, 245, 255, 0.24);
+  border-radius: 10px;
+
+  background: rgba(3, 8, 20, 0.88);
+
+  font-size: 34px;
+  font-weight: 900;
+  letter-spacing: 6px;
+
+  color: white;
+
+  text-shadow:
+    0 0 8px rgba(255, 255, 255, 0.75),
+    0 0 18px rgba(0, 245, 255, 0.75),
+    0 0 30px rgba(139, 92, 255, 0.65);
+}
+
+.difficulty-row {
+  width: 100%;
+  margin-bottom: 22px;
+
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+button {
+  border: 1px solid rgba(0, 245, 255, 0.35);
+
+  background:
+    linear-gradient(180deg, rgba(10, 18, 38, 0.98), rgba(3, 7, 16, 0.98));
+
+  color: white;
+
+  padding: 12px 20px;
+  border-radius: 10px;
+
+  font-weight: 900;
+  font-size: 14px;
+  letter-spacing: 1px;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 0 10px rgba(0, 245, 255, 0.16),
+    inset 0 0 12px rgba(0, 245, 255, 0.055);
+
+  text-shadow:
+    0 0 8px rgba(255, 255, 255, 0.5),
+    0 0 14px rgba(0, 245, 255, 0.5);
+}
+
+button:hover {
+  transform: translateY(-1px);
+  border-color: rgba(0, 245, 255, 0.75);
+
+  box-shadow:
+    0 0 15px rgba(0, 245, 255, 0.35),
+    0 0 30px rgba(139, 92, 255, 0.16),
+    inset 0 0 14px rgba(0, 245, 255, 0.1);
+}
+
+button:active {
+  transform: translateY(1px) scale(0.98);
+}
+
+.difficulty {
+  min-width: 82px;
+  padding: 10px 14px;
+  font-size: 12px;
+}
+
+.difficulty.active {
+  border-color: rgba(0, 245, 255, 0.95);
+
+  background:
+    linear-gradient(180deg, rgba(0, 245, 255, 0.22), rgba(139, 92, 255, 0.24));
+
+  box-shadow:
+    0 0 14px rgba(0, 245, 255, 0.5),
+    0 0 28px rgba(139, 92, 255, 0.25),
+    inset 0 0 14px rgba(0, 245, 255, 0.15);
+}
+
+.lock-wrap {
+  position: relative;
+
+  width: calc(var(--dial-size) + 40px);
+  height: calc(var(--dial-size) + 110px);
+
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.shackle {
+  position: absolute;
+  top: 0;
+  left: 50%;
+
+  width: 150px;
+  height: 175px;
+
+  transform: translateX(-50%);
+
+  border: 42px solid rgba(0, 245, 255, 0.16);
+  border-bottom: none;
+  border-radius: 85px 85px 0 0;
+
+  z-index: 1;
+
+  box-shadow:
+    0 0 18px rgba(0, 245, 255, 0.25),
+    inset 0 0 18px rgba(139, 92, 255, 0.18);
+}
+
+.dial {
+  position: relative;
+
+  width: var(--dial-size);
+  height: var(--dial-size);
+
+  border-radius: 50%;
+  z-index: 2;
+
+  background:
+    radial-gradient(circle at 35% 30%, rgba(40, 60, 90, 0.32), transparent 36%),
+    linear-gradient(135deg, #101827 0%, #02060d 58%, #07111b 100%);
+
+  border: 1px solid rgba(0, 245, 255, 0.18);
+
+  box-shadow:
+    0 20px 35px rgba(0, 0, 0, 0.35),
+    0 0 28px rgba(0, 245, 255, 0.18),
+    0 0 55px rgba(139, 92, 255, 0.12),
+    inset 15px 15px 22px rgba(255, 255, 255, 0.035),
+    inset -24px -24px 30px rgba(0, 0, 0, 0.4);
+}
+
+.inner {
+  position: absolute;
+  inset: 28%;
+
+  border-radius: 50%;
+
+  display: grid;
+  place-items: center;
+
+  overflow: hidden;
+
+  background:
+    radial-gradient(circle at 45% 35%, rgba(255, 255, 255, 0.18), transparent 22%),
+    linear-gradient(135deg, rgba(0, 245, 255, 0.82), rgba(139, 92, 255, 0.78));
+
+  border: 1px solid rgba(255, 255, 255, 0.28);
+
+  box-shadow:
+    0 0 18px rgba(0, 245, 255, 0.45),
+    0 0 32px rgba(139, 92, 255, 0.4),
+    inset 0 0 18px rgba(255, 255, 255, 0.08);
+}
+
+.center-level {
+  position: relative;
+  z-index: 2;
+
+  font-size: 92px;
+  font-weight: 900;
+  line-height: 1;
+
+  color: white;
+
+  text-shadow:
+    0 0 8px rgba(255, 255, 255, 0.75),
+    0 0 18px rgba(0, 245, 255, 0.75),
+    0 0 28px rgba(139, 92, 255, 0.75);
+}
+
+.watermark {
+  position: absolute;
+  z-index: 1;
+
+  font-size: 32px;
+  font-weight: 900;
+  line-height: 1.05;
+  letter-spacing: 2px;
+
+  color: rgba(255, 255, 255, 0.13);
+  text-transform: uppercase;
+}
+
+.orbit {
+  position: absolute;
+  inset: 0;
+
+  border-radius: 50%;
+
+  transform-origin: 50% 50%;
+}
+
+/*
+  DOT + BAR ALIGNMENT FIX:
+
+  Both start at the exact centre of the lock:
+  left: 50%;
+  top: 50%;
+
+  Then both are moved upward by the same --target-radius.
+
+  This means when their orbit angle matches,
+  the pink bar passes through the orange dot.
+*/
+
+#playerPin {
+  position: absolute;
+
+  left: 50%;
+  top: 50%;
+
+  width: var(--dot-size);
+  height: var(--dot-size);
+
+  border-radius: 50%;
+
+  transform:
+    translate(-50%, -50%)
+    translateY(calc(var(--target-radius) * -1));
+
+  background:
+    radial-gradient(circle at 35% 35%,
+      #fff3a5 0%,
+      #ffbf24 30%,
+      #ff8a00 70%,
+      #ff5a00 100%
+    );
+
+  box-shadow:
+    0 0 8px rgba(255, 255, 255, 0.8),
+    0 0 18px rgba(255, 174, 18, 0.95),
+    0 0 34px rgba(255, 120, 0, 0.55);
+
+  z-index: 5;
+}
+
+#targetZone {
+  position: absolute;
+
+  left: 50%;
+  top: 50%;
+
+  width: var(--line-width);
+  height: var(--line-height);
+
+  border-radius: 999px;
+
+  transform:
+    translate(-50%, -50%)
+    translateY(calc(var(--target-radius) * -1));
+
+  background:
+    linear-gradient(180deg, #ff7ac8 0%, #ff1493 38%, #ff005c 100%);
+
+  box-shadow:
+    0 0 8px rgba(255, 255, 255, 0.6),
+    0 0 16px rgba(255, 47, 155, 0.9),
+    0 0 32px rgba(255, 0, 100, 0.45);
+
+  z-index: 4;
+}
+
+.hud {
+  width: 100%;
+  margin-top: 28px;
+  padding: 14px 16px;
+
+  background: rgba(4, 9, 22, 0.88);
+
+  border: 1px solid rgba(0, 245, 255, 0.22);
+  border-radius: 12px;
+
+  box-shadow:
+    0 0 20px rgba(0, 245, 255, 0.08),
+    inset 0 0 18px rgba(0, 245, 255, 0.035);
+}
+
+.message {
+  min-height: 24px;
+  margin-bottom: 8px;
+
+  font-size: 16px;
+  font-weight: 900;
+  letter-spacing: 0.8px;
+
+  color: white;
+
+  text-shadow:
+    0 0 8px rgba(255, 255, 255, 0.65),
+    0 0 15px rgba(0, 245, 255, 0.55);
+}
+
+.stat {
+  font-size: 15px;
+  font-weight: 900;
+  line-height: 1.4;
+
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.stat span {
+  color: var(--neon-cyan);
+
+  text-shadow:
+    0 0 8px rgba(0, 245, 255, 0.85),
+    0 0 18px rgba(0, 245, 255, 0.45);
+}
+
+.buttons {
+  margin-top: 18px;
+  display: flex;
+  gap: 12px;
+}
+
+#hitBtn {
+  min-width: 150px;
+}

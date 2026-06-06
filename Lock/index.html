@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Lock Pick Minigame</title>
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <main class="game">
+
+    <div id="topLevel" class="top-level">0</div>
+
+    <section class="difficulty-row">
+      <button class="difficulty active" data-name="Easy" data-speed="140">Easy</button>
+      <button class="difficulty" data-name="Medium" data-speed="210">Medium</button>
+      <button class="difficulty" data-name="Hard" data-speed="315">Hard</button>
+      <button class="difficulty" data-name="Insane" data-speed="472.5">Insane</button>
+    </section>
+
+    <section class="lock-wrap">
+
+      <div class="shackle"></div>
+
+      <div class="dial">
+
+        <div id="targetOrbit" class="orbit">
+          <div id="targetZone"></div>
+        </div>
+
+        <div id="playerOrbit" class="orbit">
+          <div id="playerPin"></div>
+        </div>
+
+        <div class="inner">
+          <div class="watermark">Pick<br>Lock</div>
+          <div id="centerLevel" class="center-level">0</div>
+        </div>
+
+      </div>
+
+    </section>
+
+    <section class="hud">
+      <div id="message" class="message">Press E or SPACE to start</div>
+
+      <div class="stat">Difficulty: <span id="difficultyText">Easy</span></div>
+      <div class="stat">Score: <span id="scoreText">0</span></div>
+      <div class="stat">High Score: <span id="highScoreText">0</span></div>
+      <div class="stat">Time: <span id="timeText">10.0</span>s</div>
+    </section>
+
+    <section class="buttons">
+      <button id="hitBtn">E / SPACE</button>
+    </section>
+
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
