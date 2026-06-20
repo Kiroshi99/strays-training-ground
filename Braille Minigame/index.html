@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Braille Target Finder</title>
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <main class="game-shell">
+    <section class="target-panel">
+      <div class="target-box">
+        <span class="target-label">FIND TARGET:</span>
+        <div class="target-sequence" id="targetSequence"></div>
+      </div>
+    </section>
+
+    <section class="grid-frame">
+      <div class="grid" id="grid"></div>
+    </section>
+
+    <p class="message" id="message">
+      Press START to begin.
+    </p>
+
+    <div class="progress-track">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+
+    <div class="stats">
+      <span>Time: <strong id="timeLabel">30.0s</strong></span>
+    </div>
+
+    <div class="success-box">
+      Success: <strong id="successLabel">0</strong>
+    </div>
+
+    <div class="game-controls">
+      <label for="gameTime">GAME TIME</label>
+
+      <input
+        id="gameTime"
+        type="number"
+        min="5"
+        max="60"
+        value="30"
+      />
+
+      <button id="startButton" type="button">START</button>
+    </div>
+
+    <p class="instructions">
+      <b>W A S D</b> or <b>Arrow Keys</b> moves all four blue boxes.<br />
+      <b>SPACE</b> or <b>ENTER</b> confirms the selected sequence.
+    </p>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
