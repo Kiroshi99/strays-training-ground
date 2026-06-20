@@ -1,3 +1,28 @@
+const TARGET_LENGTH = 4;
+const MAX_EDGE_BOXES = 2;
+const DEFAULT_TIME_LIMIT = 30;
+
+const LEVELS = {
+  1: {
+    rows: 8,
+    cols: 8,
+    startRow: 4,
+    startCol: 4,
+    moveInterval: 750,
+    label: "LEVEL 1 — 8 × 8 GRID"
+  },
+
+  2: {
+    rows: 10,
+    cols: 10,
+    startRow: 5,
+    startCol: 5,
+    moveInterval: 550,
+    label: "LEVEL 2 — 10 × 10 GRID"
+  }
+};
+
+const gameWrap = document.getElementById("game-wrap");
 const gridBox = document.getElementById("grid-box");
 const targetSequenceEl = document.getElementById("target-sequence");
 const messageBox = document.getElementById("message-box");
@@ -6,97 +31,185 @@ const timeText = document.getElementById("time-text");
 const successCountEl = document.getElementById("success-count");
 const timeInput = document.getElementById("time-input");
 const startBtn = document.getElementById("start-btn");
+const levelInfo = document.getElementById("level-info");
+const levelButtons = [...document.querySelectorAll(".level-btn")];
 
-const ROWS = 8;
-const COLS = 8;
+let activeLevel = 1;
 
-const TARGET_LENGTH = 4;
-const MOVE_INTERVAL = 1000;
+let rows = 8;
+let cols = 8;
+let totalCells = 64;
 
-let TIME_LIMIT = 20.0;
+let startRow = 4;
+let startCol = 4;
+let startIndex = 36;
 
-let grid = [];
+let maxSelectorStartCol = 6;
+
+let board = [];
 let target = [];
 
-let correctStart = 0;
-let cursor = 0;
-let selected = [];
+let selectorStartIndex = 0;
+let targetStartIndex = 0;
 
-let timeLeft = TIME_LIMIT;
-
-let timer;
-let moveTimer;
-
-let gameOver = true;
 let successCount = 0;
+let gameActive = false;
+let hasBoard = false;
 
-function randomDigit() {
-  return Math.floor(Math.random() * 10);
+let timeLimit = DEFAULT_TIME_LIMIT;
+let timeLeft = DEFAULT_TIME_LIMIT;
+let startedAt = 0;
+
+let timerFrame = null;
+let movementTimer = null;
+
+let wrongIndexes = [];
+let correctIndexes = [];
+
+function randomInt(max) {
+  return Math.floor(Math.random() * max);
+}
+
+function wrapIndex(index) {
+  return ((index % totalCells) + totalCells) % totalCells;
+}
+
+function wrapRow(row) {
+  return ((row % rows) + rows) % rows;
+}
+
+function shuffle(items) {
+  const copy = [...items];
+
+  for (let index = copy.length - 1; index > 0; index--) {
+    const randomIndex = randomInt(index + 1);
+
+    [copy[index], copy[randomIndex]] = [
+      copy[randomIndex],
+      copy[index]
+    ];
+  }
+
+  return copy;
+}
+
+function indexToPosition(index) {
+  const safeIndex = wrapIndex(index);
+
+  return {
+    row: Math.floor(safeIndex / cols),
+    col: safeIndex % cols
+  };
+}
+
+function getBoardValue(index) {
+  const position = indexToPosition(index);
+  return board[position.row][position.col];
+}
+
+function setBoardValue(index, value) {
+  const position = indexToPosition(index);
+  board[position.row][position.col] = value;
+}
+
+function getSequenceIndexesFromStart(startIndex) {
+  return Array.from(
+    { length: TARGET_LENGTH },
+    (_, offset) => wrapIndex(startIndex + offset)
+  );
+}
+
+function getSelectorIndexes() {
+  return getSequenceIndexesFromStart(selectorStartIndex);
+}
+
+function getAllowedTargetStarts() {
+  const starts = [];
+
+  for (let row = 0; row < rows; row++) {
+    for (let col = 0; col <= maxSelectorStartCol; col++) {
+      starts.push(row * cols + col);
+    }
+  }
+
+  return starts;
 }
 
 function createTarget() {
-  target = [];
-
-  for (let i = 0; i < TARGET_LENGTH; i++) {
-    target.push(randomDigit());
-  }
+  target = Array.from(
+    { length: TARGET_LENGTH },
+    () => randomInt(10)
+  );
 }
 
-function createGrid() {
-  clearInterval(timer);
-  clearInterval(moveTimer);
+function countReachableTargetMatches() {
+  let matches = 0;
 
-  gameOver = false;
-  selected = [];
+  getAllowedTargetStarts().forEach((start) => {
+    const isMatch = target.every((digit, offset) => {
+      return getBoardValue(start + offset) === digit;
+    });
 
+    if (isMatch) {
+      matches++;
+    }
+  });
+
+  return matches;
+}
+
+function buildBoard() {
   createTarget();
 
-  grid = Array.from({ length: ROWS * COLS }, randomDigit);
+  const validStarts = getAllowedTargetStarts().filter(
+    (index) => index !== startIndex
+  );
 
-  correctStart = Math.floor(Math.random() * grid.length);
+  for (let attempt = 0; attempt < 500; attempt++) {
+    board = Array.from(
+      { length: rows },
+      () => Array.from({ length: cols }, () => randomInt(10))
+    );
 
-  const indexes = getSequenceIndexes(correctStart);
+    targetStartIndex = validStarts[randomInt(validStarts.length)];
 
-  for (let i = 0; i < target.length; i++) {
-    grid[indexes[i]] = target[i];
+    target.forEach((digit, offset) => {
+      setBoardValue(targetStartIndex + offset, digit);
+    });
+
+    if (countReachableTargetMatches() === 1) {
+      break;
+    }
   }
 
-  cursor = 0;
-  timeLeft = TIME_LIMIT;
+  selectorStartIndex = startIndex;
+  wrongIndexes = [];
+  correctIndexes = [];
+  hasBoard = true;
+}
 
-  renderTarget();
-  renderGrid();
-  updateTimer();
+function renderWaitingTarget() {
+  targetSequenceEl.innerHTML = "";
 
-  messageBox.textContent = "Find the START of the target sequence";
+  for (let index = 0; index < TARGET_LENGTH; index++) {
+    const placeholder = document.createElement("span");
 
-  timer = setInterval(() => {
-    if (gameOver) return;
+    placeholder.className = "target-digit placeholder";
+    placeholder.textContent = "?";
 
-    timeLeft -= 0.1;
-
-    if (timeLeft <= 0) {
-      timeLeft = 0;
-      loseGame();
-    }
-
-    updateTimer();
-  }, 100);
-
-  moveTimer = setInterval(() => {
-    if (gameOver) return;
-
-    moveNumbersLeft();
-    renderGrid();
-  }, MOVE_INTERVAL);
+    targetSequenceEl.appendChild(placeholder);
+  }
 }
 
 function renderTarget() {
   targetSequenceEl.innerHTML = "";
 
-  target.forEach(number => {
+  target.forEach((digit) => {
     const span = document.createElement("span");
-    span.textContent = number;
+
+    span.className = "target-digit";
+    span.textContent = digit;
+
     targetSequenceEl.appendChild(span);
   });
 }
@@ -104,272 +217,362 @@ function renderTarget() {
 function renderGrid() {
   gridBox.innerHTML = "";
 
-  const preview = gameOver ? [] : getSequenceIndexes(cursor);
+  const previewIndexes = gameActive
+    ? getSelectorIndexes()
+    : [];
 
-  grid.forEach((number, index) => {
-    const cell = document.createElement("div");
+  for (let index = 0; index < totalCells; index++) {
+    const cell = document.createElement("button");
 
     cell.className = "cell";
-    cell.textContent = number;
+    cell.type = "button";
+    cell.dataset.index = index;
 
-    if (preview.includes(index)) {
-      cell.classList.add("preview");
+    if (!hasBoard) {
+      cell.classList.add("idle");
+      cell.disabled = true;
+    } else {
+      cell.textContent = getBoardValue(index);
+
+      if (previewIndexes.includes(index)) {
+        cell.classList.add("preview");
+      }
+
+      if (correctIndexes.includes(index)) {
+        cell.classList.add("selected");
+      }
+
+      if (wrongIndexes.includes(index)) {
+        cell.classList.add("wrong");
+      }
+
+      cell.addEventListener("click", () => {
+        if (!gameActive) {
+          return;
+        }
+
+        moveSelectorToIndex(index);
+        confirmSelection();
+      });
     }
-
-    if (selected.includes(index)) {
-      cell.classList.add("selected");
-    }
-
-    cell.addEventListener("click", () => {
-      if (gameOver) return;
-
-      cursor = index;
-      selectSequence();
-    });
 
     gridBox.appendChild(cell);
-  });
-}
-
-function getLeftWrapIndex(index) {
-  const row = Math.floor(index / COLS);
-  const col = index % COLS;
-
-  let newRow = row;
-  let newCol = col - 1;
-
-  if (newCol < 0) {
-    newRow = row - 1;
-    newCol = COLS - 1;
-  }
-
-  if (newRow < 0) {
-    newRow = ROWS - 1;
-    newCol = COLS - 1;
-  }
-
-  return newRow * COLS + newCol;
-}
-
-function getRightWrapIndex(index) {
-  const row = Math.floor(index / COLS);
-  const col = index % COLS;
-
-  let newRow = row;
-  let newCol = col + 1;
-
-  if (newCol >= COLS) {
-    newRow = row + 1;
-    newCol = 0;
-  }
-
-  if (newRow >= ROWS) {
-    newRow = 0;
-    newCol = 0;
-  }
-
-  return newRow * COLS + newCol;
-}
-
-function getSequenceIndexes(startIndex) {
-  const indexes = [];
-
-  let index = startIndex;
-
-  for (let i = 0; i < target.length; i++) {
-    indexes.push(index);
-    index = getRightWrapIndex(index);
-  }
-
-  return indexes;
-}
-
-function moveNumbersLeft() {
-  const newGrid = [...grid];
-
-  for (let row = 0; row < ROWS; row++) {
-    for (let col = 0; col < COLS; col++) {
-      const currentIndex = row * COLS + col;
-      const newIndex = getLeftWrapIndex(currentIndex);
-
-      newGrid[newIndex] = grid[currentIndex];
-    }
-  }
-
-  grid = newGrid;
-
-  correctStart = getLeftWrapIndex(correctStart);
-}
-
-function moveCursor(direction) {
-  if (gameOver) return;
-
-  const row = Math.floor(cursor / COLS);
-
-  if (direction === "up" && row > 0) {
-    cursor -= COLS;
-  }
-
-  if (direction === "down" && row < ROWS - 1) {
-    cursor += COLS;
-  }
-
-  if (direction === "left") {
-    cursor = getLeftWrapIndex(cursor);
-  }
-
-  if (direction === "right") {
-    cursor = getRightWrapIndex(cursor);
-  }
-
-  renderGrid();
-}
-
-function selectSequence() {
-  if (gameOver) return;
-
-  selected = getSequenceIndexes(cursor);
-
-  renderGrid();
-
-  if (cursor === correctStart) {
-    winGame();
-  } else {
-    wrongAnswer();
   }
 }
 
-function wrongAnswer() {
-  messageBox.textContent = "Wrong sequence.";
+function getCellFromIndex(index) {
+  return gridBox.querySelector(
+    `[data-index="${wrapIndex(index)}"]`
+  );
+}
 
-  timeLeft = Math.max(0, timeLeft - 1.5);
-
-  document.querySelectorAll(".cell").forEach((cell, index) => {
-    if (selected.includes(index)) {
-      cell.classList.add("wrong");
-    }
+function paintSelection() {
+  gridBox.querySelectorAll(".preview").forEach((cell) => {
+    cell.classList.remove("preview");
   });
 
-  setTimeout(() => {
-    selected = [];
-    renderGrid();
-  }, 320);
+  getSelectorIndexes().forEach((index) => {
+    const cell = getCellFromIndex(index);
+
+    if (cell) {
+      cell.classList.add("preview");
+    }
+  });
 }
 
-function winGame() {
-  gameOver = true;
+function moveSelectorToIndex(index) {
+  const position = indexToPosition(index);
 
-  clearInterval(timer);
-  clearInterval(moveTimer);
+  selectorStartIndex =
+    position.row * cols +
+    Math.min(position.col, maxSelectorStartCol);
 
-  selected = getSequenceIndexes(correctStart);
-
-  renderGrid();
-
-  successCount++;
-
-  successCountEl.textContent = `Success: ${successCount}`;
-
-  messageBox.textContent = "ACCESS GRANTED";
-
-  setTimeout(() => {
-    createGrid();
-  }, 1200);
+  paintSelection();
 }
 
-function loseGame() {
-  gameOver = true;
-
-  clearInterval(timer);
-  clearInterval(moveTimer);
-
-  selected = getSequenceIndexes(correctStart);
-
-  renderGrid();
-
-  messageBox.textContent = "ACCESS DENIED";
-}
-
-function updateTimer() {
-  const percent = (timeLeft / TIME_LIMIT) * 100;
-
-  timerFill.style.width = `${percent}%`;
-  timeText.textContent = `Time: ${timeLeft.toFixed(1)}s`;
-}
-
-function startGameFromInput() {
-  const value = Number(timeInput.value);
-
-  if (!value || value < 5) {
-    TIME_LIMIT = 5;
-    timeInput.value = 5;
-  } else if (value > 300) {
-    TIME_LIMIT = 300;
-    timeInput.value = 300;
-  } else {
-    TIME_LIMIT = value;
-  }
-
-  successCount = 0;
-  successCountEl.textContent = "Success: 0";
-
-  createGrid();
-}
-
-startBtn.addEventListener("click", startGameFromInput);
-
-timeInput.addEventListener("keydown", event => {
-  if (event.key === "Enter") {
-    startGameFromInput();
-  }
-});
-
-document.addEventListener("keydown", event => {
-  const key = event.key.toLowerCase();
-
-  if (event.target === timeInput) {
+function moveBoardLeft() {
+  if (!gameActive) {
     return;
   }
 
-  if (key === "w" || event.key === "ArrowUp") {
-    moveCursor("up");
+  const oldBoard = board.flat();
+
+  const movedBoard = oldBoard.map((_, index) => {
+    return oldBoard[wrapIndex(index + 1)];
+  });
+
+  board = Array.from({ length: rows }, (_, row) => {
+    const rowStart = row * cols;
+
+    return movedBoard.slice(rowStart, rowStart + cols);
+  });
+
+  targetStartIndex = wrapIndex(targetStartIndex - 1);
+
+  renderGrid();
+}
+
+function setMessage(text, type = "") {
+  messageBox.textContent = text;
+  messageBox.className = type;
+}
+
+function updateHud() {
+  const percent = Math.max(0, (timeLeft / timeLimit) * 100);
+
+  timerFill.style.width = `${percent}%`;
+  timeText.textContent = `Time: ${Math.max(0, timeLeft).toFixed(1)}s`;
+  successCountEl.textContent = `Success: ${successCount}`;
+}
+
+function moveSelector(rowChange, colChange) {
+  if (!gameActive) {
+    return;
   }
 
-  if (key === "s" || event.key === "ArrowDown") {
-    moveCursor("down");
+  const current = indexToPosition(selectorStartIndex);
+
+  let nextRow = current.row;
+  let nextCol = current.col;
+
+  if (rowChange !== 0) {
+    nextRow = wrapRow(current.row + rowChange);
   }
 
-  if (key === "a" || event.key === "ArrowLeft") {
-    moveCursor("left");
+  if (colChange > 0) {
+    if (current.col >= maxSelectorStartCol) {
+      nextRow = wrapRow(current.row + 1);
+      nextCol = 0;
+    } else {
+      nextCol = current.col + 1;
+    }
   }
 
-  if (key === "d" || event.key === "ArrowRight") {
-    moveCursor("right");
+  if (colChange < 0) {
+    if (current.col <= 0) {
+      nextRow = wrapRow(current.row - 1);
+      nextCol = maxSelectorStartCol;
+    } else {
+      nextCol = current.col - 1;
+    }
   }
 
-  if (key === " " || key === "enter") {
+  selectorStartIndex = nextRow * cols + nextCol;
+
+  paintSelection();
+
+  setMessage("Board is moving — find the START of the target sequence.");
+}
+
+function selectionMatchesTarget() {
+  return selectorStartIndex === targetStartIndex;
+}
+
+function stopGame() {
+  gameActive = false;
+
+  cancelAnimationFrame(timerFrame);
+  clearInterval(movementTimer);
+
+  timerFrame = null;
+  movementTimer = null;
+}
+
+function endWithFailure(message) {
+  wrongIndexes = getSelectorIndexes();
+  correctIndexes = getSequenceIndexesFromStart(targetStartIndex);
+
+  stopGame();
+  renderGrid();
+
+  setMessage(message, "bad");
+  updateHud();
+}
+
+function confirmSelection() {
+  if (!gameActive) {
+    return;
+  }
+
+  if (selectionMatchesTarget()) {
+    correctIndexes = getSelectorIndexes();
+    wrongIndexes = [];
+
+    successCount++;
+
+    stopGame();
+    renderGrid();
+
+    setMessage(
+      "ACCESS GRANTED — press START for another target.",
+      "good"
+    );
+
+    updateHud();
+    return;
+  }
+
+  endWithFailure(
+    "ACCESS DENIED — wrong sequence. Correct boxes are green."
+  );
+}
+
+function tick(now) {
+  if (!gameActive) {
+    return;
+  }
+
+  timeLeft = timeLimit - (now - startedAt) / 1000;
+
+  updateHud();
+
+  if (timeLeft <= 0) {
+    timeLeft = 0;
+
+    endWithFailure(
+      "ACCESS DENIED — time expired. Correct boxes are green."
+    );
+
+    return;
+  }
+
+  timerFrame = requestAnimationFrame(tick);
+}
+
+function getTimeFromInput() {
+  const value = Number(timeInput.value);
+
+  if (!value || value < 5) {
+    timeInput.value = 5;
+    return 5;
+  }
+
+  if (value > 300) {
+    timeInput.value = 300;
+    return 300;
+  }
+
+  return value;
+}
+
+function startGame() {
+  stopGame();
+
+  timeLimit = getTimeFromInput();
+  timeLeft = timeLimit;
+
+  buildBoard();
+
+  renderTarget();
+  renderGrid();
+
+  setMessage("Board is moving — find the START of the target sequence.");
+
+  gameActive = true;
+  startedAt = performance.now();
+
+  updateHud();
+
+  timerFrame = requestAnimationFrame(tick);
+
+  movementTimer = setInterval(() => {
+    moveBoardLeft();
+  }, LEVELS[activeLevel].moveInterval);
+}
+
+function changeLevel(levelNumber) {
+  stopGame();
+
+  activeLevel = levelNumber;
+
+  const config = LEVELS[levelNumber];
+
+  rows = config.rows;
+  cols = config.cols;
+  totalCells = rows * cols;
+
+  startRow = config.startRow;
+  startCol = config.startCol;
+  startIndex = startRow * cols + startCol;
+
+  maxSelectorStartCol =
+    cols - TARGET_LENGTH + MAX_EDGE_BOXES;
+
+  gameWrap.dataset.level = levelNumber;
+
+  successCount = 0;
+  timeLimit = getTimeFromInput();
+  timeLeft = timeLimit;
+
+  board = [];
+  target = [];
+  hasBoard = false;
+
+  wrongIndexes = [];
+  correctIndexes = [];
+
+  levelInfo.textContent = config.label;
+
+  levelButtons.forEach((button) => {
+    button.classList.toggle(
+      "active",
+      Number(button.dataset.level) === levelNumber
+    );
+  });
+
+  renderWaitingTarget();
+  renderGrid();
+
+  setMessage("Choose a game time, then press START.");
+  updateHud();
+}
+
+levelButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    changeLevel(Number(button.dataset.level));
+  });
+});
+
+startBtn.addEventListener("click", startGame);
+
+timeInput.addEventListener("keydown", (event) => {
+  if (event.key === "Enter") {
     event.preventDefault();
-    selectSequence();
-  }
-
-  if (key === "r") {
-    startGameFromInput();
+    startGame();
   }
 });
 
-target = [0, 0, 0, 0];
+document.addEventListener("keydown", (event) => {
+  if (event.target === timeInput || !gameActive) {
+    return;
+  }
 
-grid = Array.from(
-  { length: ROWS * COLS },
-  () => ""
-);
+  const key = event.key.toLowerCase();
 
-renderTarget();
-renderGrid();
+  if (key === "w" || event.key === "ArrowUp") {
+    event.preventDefault();
+    moveSelector(-1, 0);
+  }
 
-timeText.textContent = "Time: 0.0s";
+  if (key === "s" || event.key === "ArrowDown") {
+    event.preventDefault();
+    moveSelector(1, 0);
+  }
 
-timerFill.style.width = "0%";
+  if (key === "a" || event.key === "ArrowLeft") {
+    event.preventDefault();
+    moveSelector(0, -1);
+  }
 
-messageBox.textContent =
-  "Choose time and press START";
+  if (key === "d" || event.key === "ArrowRight") {
+    event.preventDefault();
+    moveSelector(0, 1);
+  }
+
+  if (event.key === "Enter" || event.code === "Space") {
+    event.preventDefault();
+    confirmSelection();
+  }
+});
+
+changeLevel(1);
