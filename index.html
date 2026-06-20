@@ -7,12 +7,9 @@
     content="width=device-width, initial-scale=1.0"
   />
 
-  <title>
-    Strays's Training Ground
-  </title>
+  <title>Strays's Training Ground</title>
 
   <style>
-
     * {
       box-sizing: border-box;
     }
@@ -35,7 +32,7 @@
       letter-spacing: 2px;
       text-shadow:
         0 0 10px #00d9ff,
-        0 0 25px rgba(0,217,255,0.45);
+        0 0 25px rgba(0, 217, 255, 0.45);
     }
 
     #navigation {
@@ -51,36 +48,21 @@
     button {
       padding: 12px 20px;
       font-size: 15px;
-      border: none;
+      border: 1px solid #333;
       border-radius: 8px;
       cursor: pointer;
-      background:
-        linear-gradient(
-          180deg,
-          #1f1f1f,
-          #111
-        );
-
       color: white;
+      background: linear-gradient(180deg, #1f1f1f, #111);
       transition: 0.2s ease;
-      border: 1px solid #333;
     }
 
     button:hover {
-      background:
-        linear-gradient(
-          135deg,
-          #00d9ff,
-          #00ffb7
-        );
-
+      background: linear-gradient(135deg, #00d9ff, #00ffb7);
       color: black;
-
       transform: scale(1.05);
-
       box-shadow:
         0 0 12px #00d9ff,
-        0 0 22px rgba(0,255,183,0.45);
+        0 0 22px rgba(0, 255, 183, 0.45);
     }
 
     #game-container {
@@ -91,13 +73,8 @@
       align-items: center;
       padding: 12px;
       position: relative;
-
       background:
-        radial-gradient(
-          circle at center,
-          #1a1a1a 0%,
-          #050505 100%
-        );
+        radial-gradient(circle at center, #1a1a1a 0%, #050505 100%);
     }
 
     iframe {
@@ -106,9 +83,7 @@
       border: 2px solid #333;
       border-radius: 12px;
       background: black;
-
-      box-shadow:
-        0 0 20px rgba(0,0,0,0.6);
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
     }
 
     #welcome-text {
@@ -118,24 +93,21 @@
       pointer-events: none;
       user-select: none;
       letter-spacing: 2px;
-
-      text-shadow:
-        0 0 12px rgba(255,255,255,0.08);
+      text-shadow: 0 0 12px rgba(255, 255, 255, 0.08);
     }
-
   </style>
 </head>
 
 <body>
-
-  <h1>
-    Strays's Training Ground
-  </h1>
+  <h1>Strays's Training Ground</h1>
 
   <div id="navigation">
-
     <button onclick="loadGame('4 digit PIN guess/index.html')">
       🔐 4 Digit PIN Guess
+    </button>
+
+    <button onclick="loadGame('Braille Minigame/index.html')">
+      ⠿ Braille Minigame
     </button>
 
     <button onclick="loadGame('Follow the moving circle/index.html')">
@@ -169,11 +141,9 @@
     <button onclick="loadGame('Lock/index.html')">
       🔓 Lock Pick
     </button>
-
   </div>
 
   <div id="game-container">
-
     <div id="welcome-text">
       SELECT A TRAINING MODULE
     </div>
@@ -183,25 +153,20 @@
       src=""
       frameborder="0">
     </iframe>
-
   </div>
 
   <script>
-
     function loadGame(path) {
-
-      const frame =
-        document.getElementById("game-frame");
-
-      const welcome =
-        document.getElementById("welcome-text");
+      const frame = document.getElementById("game-frame");
+      const welcome = document.getElementById("welcome-text");
 
       frame.src = path;
-
       welcome.style.display = "none";
+
+      frame.onload = () => {
+        frame.focus();
+      };
     }
-
   </script>
-
 </body>
 </html>
