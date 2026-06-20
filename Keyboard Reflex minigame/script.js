@@ -140,7 +140,7 @@ playButton.addEventListener("click", () => {
     // Start game
     startGame();
 
-  }, 800);
+  }, 3000);
 });
 
 
