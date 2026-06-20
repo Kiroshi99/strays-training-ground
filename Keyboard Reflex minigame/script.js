@@ -10,7 +10,6 @@ const loadingScreen = document.getElementById("loading-screen");
 const scoreDisplay = document.getElementById("score-display");
 const timerDisplay = document.getElementById("timer-display");
 
-
 // ========================================
 // GAME VARIABLES
 // ========================================
@@ -27,14 +26,18 @@ let score = 0;
 let startTime = 0;
 let targetColor = "";
 
-
 // ========================================
 // GAME DATA
 // ========================================
 
 const keys = ["A", "S", "D", "F", "H", "J", "K", "L"];
-const colors = ["green", "orange", "pink"];
 
+// Screenshot colours
+const colors = [
+  "#ACE05F", // lime green
+  "#FFB501", // orange/yellow
+  "#E08DEC", // pink/purple
+];
 
 // ========================================
 // DIFFICULTY SETTINGS
@@ -59,15 +62,12 @@ const difficultySettings = {
 
 let currentDifficulty = difficultySettings.easy;
 
-
 // ========================================
 // DIFFICULTY BUTTONS
 // ========================================
 
 document.querySelectorAll(".difficulty-btn").forEach((btn) => {
   btn.addEventListener("click", () => {
-
-    // Cannot change difficulty during a game or countdown
     if (gameRunning || countdownActive) return;
 
     document.querySelectorAll(".difficulty-btn").forEach((b) => {
@@ -75,11 +75,9 @@ document.querySelectorAll(".difficulty-btn").forEach((btn) => {
     });
 
     btn.classList.add("active");
-
     currentDifficulty = difficultySettings[btn.dataset.difficulty];
   });
 });
-
 
 // ========================================
 // PLAY / RESTART BUTTONS
@@ -93,24 +91,19 @@ restartButton.addEventListener("click", () => {
   showStartCountdown();
 });
 
-
 // ========================================
 // 3-SECOND START NOTIFICATION
 // ========================================
 
 function showStartCountdown() {
-
-  // Prevent duplicate countdowns
   if (gameRunning || countdownActive) return;
 
   countdownActive = true;
   gameOver = false;
 
-  // Hide buttons during countdown
   playButton.style.display = "none";
   restartButton.style.display = "none";
 
-  // Show notification
   loadingScreen.innerHTML = `
     <div class="game-over-message">
       <h2>GET READY</h2>
@@ -120,7 +113,6 @@ function showStartCountdown() {
 
   loadingScreen.style.display = "block";
 
-  // Start after 3 seconds
   countdownTimeout = setTimeout(() => {
     countdownActive = false;
     loadingScreen.style.display = "none";
@@ -128,13 +120,11 @@ function showStartCountdown() {
   }, 3000);
 }
 
-
 // ========================================
 // START GAME
 // ========================================
 
 function startGame() {
-
   clearInterval(letterInterval);
   clearInterval(timerInterval);
 
@@ -155,7 +145,6 @@ function startGame() {
   playButton.style.display = "none";
 
   generateTarget();
-
   createLetter();
 
   letterInterval = setInterval(() => {
@@ -167,7 +156,6 @@ function startGame() {
   }, 1000);
 }
 
-
 // ========================================
 // GENERATE TARGET COLOUR
 // ========================================
@@ -177,13 +165,11 @@ function generateTarget() {
   targetBar.style.background = targetColor;
 }
 
-
 // ========================================
 // CREATE LETTER
 // ========================================
 
 function createLetter() {
-
   if (!gameRunning) return;
 
   const letter = document.createElement("div");
@@ -207,18 +193,14 @@ function createLetter() {
   let start = null;
 
   function animate(timestamp) {
-
     if (!gameRunning || !letter.parentElement) return;
 
     if (!start) start = timestamp;
 
-    const progress =
-      (timestamp - start) / currentDifficulty.speed;
-
+    const progress = (timestamp - start) / currentDifficulty.speed;
     const gameHeight = lettersArea.clientHeight;
 
-    const y =
-      gameHeight - progress * (gameHeight + 100);
+    const y = gameHeight - progress * (gameHeight + 100);
 
     letter.style.top = `${y}px`;
 
@@ -229,10 +211,8 @@ function createLetter() {
       letterRect.bottom >= targetRect.top &&
       letterRect.top <= targetRect.bottom;
 
-    const leftBar =
-      letterRect.bottom < targetRect.top;
+    const leftBar = letterRect.bottom < targetRect.top;
 
-    // Correct-coloured letter entered the target bar
     if (
       insideBar &&
       letter.dataset.color === targetColor &&
@@ -241,41 +221,31 @@ function createLetter() {
       letter.dataset.mustHit = "true";
     }
 
-    // Correct letter passed without being pressed
     if (
       leftBar &&
       letter.dataset.mustHit === "true" &&
       letter.dataset.handled === "false"
     ) {
-      gameFail(
-        `You missed a correct letter: ${letter.textContent}`
-      );
-
+      gameFail(`You missed a correct letter: ${letter.textContent}`);
       return;
     }
 
     if (progress < 1) {
       requestAnimationFrame(animate);
-    } else {
-      if (letter.parentElement) {
-        letter.remove();
-      }
+    } else if (letter.parentElement) {
+      letter.remove();
     }
   }
 
   requestAnimationFrame(animate);
 }
 
-
 // ========================================
 // KEYBOARD INPUT
 // ========================================
 
 function handleKeyPress(e) {
-
-  // Restart after failing with Space or Enter
   if (!gameRunning) {
-
     if (
       gameOver &&
       !countdownActive &&
@@ -290,24 +260,18 @@ function handleKeyPress(e) {
 
   const pressedKey = e.key.toUpperCase();
 
-  // Ignore anything except game keys
   if (!keys.includes(pressedKey)) return;
 
-  const letters = Array.from(
-    document.querySelectorAll(".letter")
-  );
-
+  const letters = Array.from(document.querySelectorAll(".letter"));
   const targetRect = targetBar.getBoundingClientRect();
 
   for (const letter of letters) {
-
     const rect = letter.getBoundingClientRect();
 
     const insideBar =
       rect.bottom >= targetRect.top &&
       rect.top <= targetRect.bottom;
 
-    // Correct key, colour, and timing
     if (
       letter.textContent === pressedKey &&
       letter.dataset.color === targetColor &&
@@ -333,10 +297,8 @@ function handleKeyPress(e) {
     }
   }
 
-  // Wrong letter or wrong timing
   gameFail("Wrong key or bad timing.");
 }
-
 
 // ========================================
 // SCORE / TIMER
@@ -347,19 +309,15 @@ function updateScoreDisplay() {
 }
 
 function updateTimer() {
-  const elapsed =
-    Math.floor((Date.now() - startTime) / 1000);
-
+  const elapsed = Math.floor((Date.now() - startTime) / 1000);
   timerDisplay.textContent = `Time: ${elapsed}s`;
 }
-
 
 // ========================================
 // GAME OVER
 // ========================================
 
 function gameFail(reason) {
-
   if (!gameRunning) return;
 
   gameRunning = false;
@@ -386,7 +344,6 @@ function gameFail(reason) {
 
   loadingScreen.style.display = "block";
 }
-
 
 // ========================================
 // KEYBOARD LISTENER
