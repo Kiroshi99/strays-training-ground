@@ -77,17 +77,17 @@ const difficultySettings = {
   // Hard mode
   hard: {
 
-    speed: 1100,
+    speed: 850,
 
-    spawnRate: 900,
+    spawnRate: 700,
   },
 
   // Extreme mode
   extreme: {
 
-    speed: 800,
+    speed: 650,
 
-    spawnRate: 600,
+    spawnRate: 480,
   },
 };
 
