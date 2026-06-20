@@ -6,18 +6,64 @@
   <title>Number Guessing Game</title>
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
   <h1>Number Guessing Game</h1>
+
   <div id="timerBarContainer">
-    <div id="timerBar"></div> <!-- Visual timer bar -->
+    <div id="timerBar"></div>
   </div>
+
   <div id="inputs">
-    <input type="text" id="input1" maxlength="1" oninput="moveFocus(1, 2)">
-    <input type="text" id="input2" maxlength="1" oninput="moveFocus(2, 3)">
-    <input type="text" id="input3" maxlength="1" oninput="moveFocus(3, 4)">
-    <input type="text" id="input4" maxlength="1" oninput="moveFocus(4)">
+    <input
+      type="text"
+      id="input1"
+      maxlength="1"
+      inputmode="numeric"
+      autocomplete="off"
+      disabled
+      oninput="moveFocus(1, 2)"
+    >
+
+    <input
+      type="text"
+      id="input2"
+      maxlength="1"
+      inputmode="numeric"
+      autocomplete="off"
+      disabled
+      oninput="moveFocus(2, 3)"
+    >
+
+    <input
+      type="text"
+      id="input3"
+      maxlength="1"
+      inputmode="numeric"
+      autocomplete="off"
+      disabled
+      oninput="moveFocus(3, 4)"
+    >
+
+    <input
+      type="text"
+      id="input4"
+      maxlength="1"
+      inputmode="numeric"
+      autocomplete="off"
+      disabled
+      oninput="moveFocus(4)"
+    >
   </div>
-  <button id="restartButton" onclick="restartGame()" style="display:none;">Restart Game</button>
+
+  <button id="startButton" onclick="startGame()">
+    Start Game
+  </button>
+
+  <button id="restartButton" onclick="restartGame()" style="display: none;">
+    Restart Game
+  </button>
+
   <script src="script.js"></script>
 </body>
 </html>
