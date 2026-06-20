@@ -49,37 +49,41 @@ radial-gradient(circle,
 const difficulties = {
   easy: {
     gameTime: 45,
-    dotTime: 3000,
+    dotTime: 1000,
+    shrinkTime: 1000,
     maxHits: 14,
     maxMissed: 3,
-    targetSize: 54,
+    targetSize: 50,
     clickBonus: 22
   },
 
   medium: {
-    gameTime: 35,
-    dotTime: 2400,
+    gameTime: 22,
+    dotTime: 600,
+    shrinkTime: 600,
     maxHits: 14,
     maxMissed: 3,
-    targetSize: 50,
-    clickBonus: 20
+    targetSize: 48,
+    clickBonus: 16
   },
 
   hard: {
-    gameTime: 28,
-    dotTime: 1900,
+    gameTime: 20,
+    dotTime: 550,
+    shrinkTime: 550,
     maxHits: 14,
     maxMissed: 3,
-    targetSize: 46,
+    targetSize: 48,
     clickBonus: 18
   },
 
   extreme: {
-    gameTime: 22,
-    dotTime: 1500,
+    gameTime: 18,
+    dotTime: 400,
+    shrinkTime: 400,
     maxHits: 14,
     maxMissed: 3,
-    targetSize: 42,
+    targetSize: 48,
     clickBonus: 16
   }
 };
@@ -92,6 +96,7 @@ let timeLeft = difficulties[currentDifficulty].gameTime;
 
 let gameTime = difficulties[currentDifficulty].gameTime;
 let dotTime = difficulties[currentDifficulty].dotTime;
+let shrinkTime = difficulties[currentDifficulty].shrinkTime;
 let maxHits = difficulties[currentDifficulty].maxHits;
 let maxMissed = difficulties[currentDifficulty].maxMissed;
 let targetSize = difficulties[currentDifficulty].targetSize;
@@ -124,6 +129,7 @@ document.querySelectorAll(".difficulty-btn").forEach(button => {
 
     gameTime = difficulties[currentDifficulty].gameTime;
     dotTime = difficulties[currentDifficulty].dotTime;
+    shrinkTime = difficulties[currentDifficulty].shrinkTime;
     maxHits = difficulties[currentDifficulty].maxHits;
     maxMissed = difficulties[currentDifficulty].maxMissed;
     targetSize = difficulties[currentDifficulty].targetSize;
@@ -237,7 +243,7 @@ function spawnTarget() {
         { transform: "scale(0.45)" }
       ],
       {
-        duration: dotTime,
+        duration: shrinkTime,
         easing: "linear",
         fill: "forwards"
       }
@@ -339,7 +345,6 @@ function endGame(won) {
       ACQUIRED!
       <small>${hits}/${maxHits} HITS</small>
     `;
-    message.textContent = "";
   } else {
     resultBox.className = "result-failed";
     resultBox.innerHTML = `
@@ -347,8 +352,9 @@ function endGame(won) {
       FAILED!
       <small>${hits}/${maxHits} HITS</small>
     `;
-    message.textContent = "";
   }
+
+  message.textContent = "";
 
   startBtn.textContent = "PLAY AGAIN";
   startBtn.style.display = "block";
