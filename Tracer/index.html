@@ -2,56 +2,65 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tracer Minigame</title>
 
-  <title>Find Target Minigame</title>
-
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css" />
 </head>
+
 <body>
-
-  <main id="game-wrap">
-
-    <div id="target-box">
+  <main id="game-wrap" data-level="1">
+    <section id="target-box">
       <span id="target-label">FIND TARGET:</span>
       <div id="target-sequence"></div>
-    </div>
+    </section>
 
-    <div id="grid-box"></div>
+    <section id="level-settings">
+      <button class="level-btn active" type="button" data-level="1">
+        LEVEL 1
+      </button>
 
-    <div id="message-box">
-      Find the START of the target sequence
-    </div>
+      <button class="level-btn" type="button" data-level="2">
+        LEVEL 2
+      </button>
+    </section>
+
+    <p id="level-info">LEVEL 1 — 8 × 8 GRID</p>
+
+    <section id="grid-box"></section>
+
+    <p id="message-box">Choose a level and game time, then press START.</p>
 
     <div id="timer-line">
       <div id="timer-fill"></div>
     </div>
 
-    <div id="time-text">
-      Time: 20.0s
-    </div>
+    <p id="time-text">Time: 30.0s</p>
 
     <div id="stats-row">
       <div id="success-count">Success: 0</div>
     </div>
 
     <div id="time-settings">
-  <label for="time-input">GAME TIME</label>
+      <label for="time-input">GAME TIME</label>
 
-  <input
-    type="number"
-    id="time-input"
-    min="5"
-    max="300"
-    value="20"
-  />
+      <input
+        type="number"
+        id="time-input"
+        min="5"
+        max="300"
+        value="30"
+      />
 
-  <button id="start-btn">START</button>
-</div>
+      <button id="start-btn" type="button">START</button>
+    </div>
 
+    <p id="controls-text">
+      <b>W A S D</b> or <b>Arrow Keys</b> moves all four blue boxes.<br />
+      <b>SPACE</b> or <b>ENTER</b> confirms the selected sequence.
+    </p>
   </main>
 
   <script src="script.js"></script>
-
 </body>
 </html>
