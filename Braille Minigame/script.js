@@ -17,27 +17,32 @@ const START_COL = 5;
 const START_INDEX = START_ROW * COLS + START_COL;
 
 /*
-Braille dots:
+3 × 3 dot patterns:
 
-0 3
-1 4
-2 5
+0 3 6
+1 4 7
+2 5 8
 */
 const DOT_POSITIONS = [
   [1, 1],
   [1, 2],
   [1, 3],
+
   [2, 1],
   [2, 2],
-  [2, 3]
+  [2, 3],
+
+  [3, 1],
+  [3, 2],
+  [3, 3]
 ];
 
-/* All 63 non-empty Braille patterns */
-const PATTERNS = Array.from({ length: 63 }, (_, index) => {
+/* All 511 non-empty 3 × 3 dot patterns */
+const PATTERNS = Array.from({ length: 511 }, (_, index) => {
   const mask = index + 1;
   const pattern = [];
 
-  for (let dot = 0; dot < 6; dot++) {
+  for (let dot = 0; dot < 9; dot++) {
     if (mask & (1 << dot)) {
       pattern.push(dot);
     }
