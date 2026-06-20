@@ -1,76 +1,141 @@
-/* General body styles to define font, alignment, background, color, and padding */
 body {
-    font-family: Arial, sans-serif; /* Set the font for the content */
-    text-align: center; /* Center-align all content within the body */
-    background-color: #282c34; /* Dark background for contrast */
-    color: white; /* Text color set to white for readability against the dark background */
-    padding: 325px; /* Large padding to center the game in the viewport */
+    font-family: Arial, sans-serif;
+    text-align: center;
+    color: #eafcff;
+    background:
+        radial-gradient(circle at top, #132f4a 0%, #081127 45%, #02040c 100%);
+    min-height: 100vh;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
-/* Styles common to all input fields and buttons */
-input, button {
-    font-size: 24px; /* Larger font size for better visibility */
-    padding: 10px; /* Padding inside the input boxes and buttons */
-    margin: 5px; /* Spacing between elements to prevent them from touching */
-    width: 50px; /* Fixed width to keep elements uniformly sized */
-    height: 50px; /* Fixed height to maintain a square aspect ratio */
-    text-align: center; /* Center text inside inputs and buttons */
+/* Title */
+
+h1 {
+    color: #37f6ff;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    text-shadow:
+        0 0 8px #37f6ff,
+        0 0 18px #37f6ff,
+        0 0 30px #ff3fc8;
 }
 
-/* Specific styles for input fields */
-input {
-    border: 10px solid #ccc; /* Increased border thickness to 5px */
-    border-radius: 10px; /* Rounded corners for a softer, modern look */
-}
+/* Number boxes and buttons */
 
-/* Style for inputs where the guess is correct (green border) */
-.correct {
-    border: 10px solid green; /* Thicker border for better visibility */
-}
-
-/* Style for inputs where the number is correct but in the wrong location (yellow border) */
-.wrong-location {
-    border: 10px solid yellow; /* Thicker border for better visibility */
-}
-
-/* Style for inputs where the guess is incorrect (red border) */
-.incorrect {
-    border: 10px solid red; /* Thicker border for better visibility */
-}
-
-/* Style for inputs where the guess is incorrect (red border) */
-.incorrect {
-    border-color: red; /* Indicates wrong number */
-}
-
-/* Styles for all buttons */
+input,
 button {
-    cursor: pointer; /* Changes the cursor to a pointer to indicate it's clickable */
-    background-color: #4CAF50; /* Green background to stand out */
-    color: white; /* Text color white for high contrast and visibility */
-    border: none; /* No border for a clean, modern appearance */
-    border-radius: 5px; /* Rounded corners to match the input fields */
+    font-size: 24px;
+    padding: 10px;
+    margin: 5px;
+    height: 50px;
+    text-align: center;
 }
 
-/* Style for the restart button, hidden by default */
-#restartButton {
-    display: none; /* Hidden until the game ends or needs to be restarted */
+input {
+    width: 50px;
+    color: white;
+    background: rgba(3, 10, 28, 0.9);
+    border: 3px solid #37f6ff;
+    border-radius: 10px;
+    outline: none;
+    box-shadow:
+        inset 0 0 10px rgba(55, 246, 255, 0.15),
+        0 0 12px rgba(55, 246, 255, 0.45);
 }
 
-/* Timer bar container styling */
+/* Normal focused box is cyan. */
+input:focus:not(.correct):not(.wrong-location):not(.incorrect) {
+    border-color: #37f6ff;
+    box-shadow:
+        0 0 12px #37f6ff,
+        0 0 24px rgba(55, 246, 255, 0.7);
+}
+
+input:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+/* Feedback colours override the focus colour. */
+
+input.correct,
+input.correct:focus {
+    border-color: #25ff9b;
+    box-shadow:
+        0 0 10px #25ff9b,
+        0 0 20px rgba(37, 255, 155, 0.7);
+}
+
+input.wrong-location,
+input.wrong-location:focus {
+    border-color: #ffe84f;
+    box-shadow:
+        0 0 10px #ffe84f,
+        0 0 20px rgba(255, 232, 79, 0.7);
+}
+
+input.incorrect,
+input.incorrect:focus {
+    border-color: #ff3d63;
+    box-shadow:
+        0 0 10px #ff3d63,
+        0 0 20px rgba(255, 61, 99, 0.7);
+}
+
+/* Buttons */
+
+button {
+    width: auto;
+    min-width: 155px;
+    cursor: pointer;
+    color: #37f6ff;
+    background: rgba(5, 20, 42, 0.9);
+    border: 2px solid #37f6ff;
+    border-radius: 7px;
+    font-weight: bold;
+    text-transform: uppercase;
+    box-shadow:
+        inset 0 0 12px rgba(55, 246, 255, 0.15),
+        0 0 14px rgba(55, 246, 255, 0.45);
+}
+
+button:hover {
+    color: #061019;
+    background: #37f6ff;
+    box-shadow:
+        0 0 15px #37f6ff,
+        0 0 28px rgba(55, 246, 255, 0.8);
+}
+
+/* Timer */
+
 #timerBarContainer {
-    width: 35%; /* Full width of the container */
-    background-color: #555; /* Dark background for the timer bar */
-    padding: 3px; /* Padding around the bar */
-    border-radius: 5px; /* Rounded corners for the container */
-    margin: auto; /* Center the bar horizontally */
+    width: 35%;
+    min-width: 260px;
+    background: rgba(0, 0, 0, 0.45);
+    border: 1px solid #37f6ff;
+    padding: 3px;
+    border-radius: 6px;
+    margin: 20px auto;
+    box-shadow:
+        inset 0 0 10px rgba(55, 246, 255, 0.15),
+        0 0 12px rgba(55, 246, 255, 0.3);
 }
 
-/* Timer bar styling */
 #timerBar {
-    height: 5px; /* Height of the timer bar */
-    width: 100%; /* Start with the full width */
-    background-color: red; /* Color of the timer bar */
-    border-radius: 3px; /* Rounded corners for the bar */
-    transition: width 1s linear; /* Smooth width reduction for better user experience */
+    height: 7px;
+    width: 100%;
+    border-radius: 4px;
+    background: linear-gradient(90deg, #ff3fc8, #37f6ff);
+    box-shadow: 0 0 12px #37f6ff;
+    transition: width 1s linear;
+}
+
+#timerBar.danger {
+    background: linear-gradient(90deg, #ff3d63, #ffe84f);
+    box-shadow: 0 0 12px #ff3d63;
 }
