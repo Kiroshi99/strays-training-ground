@@ -55,8 +55,8 @@ const difficultySettings = {
   },
 
   extreme: {
-    speed: 650,
-    spawnRate: 480,
+    speed: 700,
+    spawnRate: 500,
   },
 };
 
