@@ -98,6 +98,10 @@ input {
 .tablet {
     position: relative;
 
+    /* Makes the entire iPad 1.25x bigger */
+    transform: scale(1.25);
+    transform-origin: center;
+
     width: min(
         var(--tablet-width),
         95vw,
@@ -107,6 +111,9 @@ input {
     aspect-ratio: var(--tablet-ratio);
 
     padding: var(--bezel-size);
+
+    /* Keep all your existing tablet CSS here */
+
 
     border: 3px solid #050505;
     border-radius: var(--tablet-radius);
