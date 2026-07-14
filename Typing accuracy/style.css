@@ -1,0 +1,877 @@
+/*==========================================================
+    SPECTRE QBCORE TABLET
+
+    QUICK RESIZE SETTINGS:
+
+    --tablet-width:
+        Changes the entire tablet size.
+
+    --tablet-ratio:
+        Changes the tablet shape.
+
+    --bezel-size:
+        Changes the thickness of the black border.
+==========================================================*/
+
+:root {
+
+    /* TABLET SIZE */
+    --tablet-width: 1080px;
+    --tablet-ratio: 16 / 10;
+
+    /* TABLET SHAPE */
+    --tablet-radius: 70px;
+    --bezel-size: 28px;
+    --screen-radius: 44px;
+
+    /* GREEN COLOURS */
+    --green: #5cff8a;
+    --green-bright: #b0ffc4;
+    --green-muted: #2c8d4a;
+    --green-border: #30b75b;
+    --green-dark: #020e07;
+
+    /* GOLD COLOUR */
+    --gold: #efc94d;
+
+    /* ERROR COLOUR */
+    --red: #ff554d;
+}
+
+
+/*==========================================================
+    GLOBAL RESET
+==========================================================*/
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    width: 100%;
+    height: 100%;
+
+    margin: 0;
+    overflow: hidden;
+
+    /*
+        Transparent FiveM NUI background.
+    */
+    background: transparent;
+
+    font-family:
+        Consolas,
+        "Courier New",
+        monospace;
+}
+
+button,
+input {
+    font: inherit;
+}
+
+.hidden {
+    display: none !important;
+}
+
+
+/*==========================================================
+    CENTRE TABLET
+==========================================================*/
+
+#game {
+    position: fixed;
+    inset: 0;
+
+    display: grid;
+    place-items: center;
+
+    padding: 20px;
+
+    background: transparent;
+}
+
+
+/*==========================================================
+    BLACK TABLET BODY
+==========================================================*/
+
+.tablet {
+    position: relative;
+
+    width: min(
+        var(--tablet-width),
+        95vw,
+        calc(94vh * 16 / 10)
+    );
+
+    aspect-ratio: var(--tablet-ratio);
+
+    padding: var(--bezel-size);
+
+    border: 3px solid #050505;
+    border-radius: var(--tablet-radius);
+
+    background:
+        linear-gradient(
+            145deg,
+            #242424 0%,
+            #080808 45%,
+            #181818 100%
+        );
+
+    box-shadow:
+        0 28px 75px rgba(0, 0, 0, 0.72),
+        inset 0 0 0 2px #353535,
+        inset 0 0 20px #000000;
+}
+
+
+/*==========================================================
+    TABLET CAMERA
+==========================================================*/
+
+.tablet-camera {
+    position: absolute;
+
+    top: 50%;
+    left: 11px;
+
+    width: 7px;
+    height: 7px;
+
+    transform: translateY(-50%);
+
+    border-radius: 50%;
+
+    background: #020202;
+
+    box-shadow:
+        inset 0 0 0 1px #292929,
+        0 0 3px #000000;
+}
+
+
+/*==========================================================
+    INNER TABLET SCREEN
+==========================================================*/
+
+.terminal {
+    position: relative;
+
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+
+    display: grid;
+
+    grid-template-rows:
+        auto
+        minmax(0, 1fr)
+        10px
+        auto;
+
+    gap: 12px;
+
+    padding: 20px 24px 16px;
+
+    overflow: hidden;
+
+    color: var(--green);
+
+    border: 1px solid #333333;
+    border-radius: var(--screen-radius);
+
+    background:
+        repeating-linear-gradient(
+            0deg,
+            transparent 0,
+            transparent 3px,
+            rgba(85, 255, 130, 0.014) 4px
+        ),
+        radial-gradient(
+            circle at 50% 35%,
+            rgba(30, 150, 65, 0.12),
+            transparent 58%
+        ),
+        #010704;
+
+    box-shadow:
+        inset 0 0 35px #000000,
+        0 0 0 1px #000000;
+}
+
+
+/*==========================================================
+    CENTRED HEADER
+==========================================================*/
+
+header {
+    position: relative;
+    z-index: 3;
+
+    display: block;
+
+    width: 100%;
+
+    /*
+        Equal space on both sides keeps the title
+        properly centred.
+
+        The restart button is positioned separately.
+    */
+    padding: 0 110px;
+
+    text-align: center;
+}
+
+.header-text {
+    width: 100%;
+    text-align: center;
+}
+
+
+/* Small top description */
+
+.eyebrow {
+    margin: 0 0 7px;
+
+    color: #b49746;
+
+    font-size: clamp(
+        11px,
+        1.05vw,
+        16px
+    );
+
+    font-weight: 700;
+
+    line-height: 1.4;
+    letter-spacing: 2px;
+
+    text-align: center;
+}
+
+
+/* Main title */
+
+h1 {
+    margin: 0;
+
+    color: var(--gold);
+
+    font-size: clamp(
+        22px,
+        2.3vw,
+        34px
+    );
+
+    line-height: 1.2;
+    letter-spacing: 4px;
+
+    text-align: center;
+
+    text-shadow:
+        0 0 10px rgba(239, 201, 77, 0.18);
+}
+
+
+/* Description below the main title */
+
+.subtitle {
+    max-width: 760px;
+
+    margin: 9px auto 0;
+
+    color: #c2ad6c;
+
+    font-size: clamp(
+        11px,
+        1vw,
+        15px
+    );
+
+    line-height: 1.5;
+
+    text-align: center;
+}
+
+
+/*==========================================================
+    BUTTONS
+==========================================================*/
+
+#restart-button,
+#play-again-button {
+    padding: 8px 14px;
+
+    color: #bda24f;
+
+    border: 1px solid #55461d;
+    border-radius: 4px;
+
+    background: #0a0905;
+
+    cursor: pointer;
+
+    font-size: 10px;
+    font-weight: 700;
+
+    letter-spacing: 1px;
+    text-transform: uppercase;
+
+    transition:
+        color 0.15s ease,
+        border-color 0.15s ease,
+        background 0.15s ease;
+}
+
+
+/*
+    Absolute positioning stops the restart button
+    from pushing the title away from the centre.
+*/
+
+#restart-button {
+    position: absolute;
+
+    top: 0;
+    right: 0;
+}
+
+#restart-button:hover,
+#play-again-button:hover {
+    color: #ffe177;
+
+    border-color: var(--gold);
+
+    background: #161205;
+}
+
+
+/*==========================================================
+    MAIN GREEN GAME AREA
+
+    The old shell/log section has been removed.
+==========================================================*/
+
+.word-panel {
+    position: relative;
+
+    min-height: 0;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    padding: clamp(
+        18px,
+        3vh,
+        38px
+    );
+
+    overflow: hidden;
+
+    border: 1px solid var(--green-border);
+    border-radius: 5px;
+
+    background:
+        repeating-linear-gradient(
+            0deg,
+            transparent 0,
+            transparent 3px,
+            rgba(70, 255, 115, 0.018) 4px
+        ),
+        radial-gradient(
+            circle,
+            rgba(25, 123, 52, 0.15),
+            transparent 65%
+        ),
+        linear-gradient(
+            180deg,
+            #03140a,
+            var(--green-dark)
+        );
+
+    box-shadow:
+        inset 0 0 32px rgba(0, 0, 0, 0.82),
+        0 0 12px rgba(50, 255, 100, 0.08);
+}
+
+
+/*==========================================================
+    DECORATIVE GREEN CORNERS
+==========================================================*/
+
+.corner {
+    position: absolute;
+
+    width: 26px;
+    height: 26px;
+
+    pointer-events: none;
+}
+
+.corner-top-left {
+    top: 16px;
+    left: 16px;
+
+    border-top: 2px solid var(--green);
+    border-left: 2px solid var(--green);
+}
+
+.corner-bottom-right {
+    right: 16px;
+    bottom: 16px;
+
+    border-right: 2px solid var(--green);
+    border-bottom: 2px solid var(--green);
+}
+
+
+/*==========================================================
+    CIPHER BLOCK NUMBER
+==========================================================*/
+
+#fragment-text {
+    margin:
+        0
+        0
+        clamp(12px, 2.2vh, 26px);
+
+    color: #45a960;
+
+    font-size: clamp(
+        10px,
+        0.9vw,
+        13px
+    );
+
+    font-weight: 700;
+
+    line-height: 1.4;
+    letter-spacing: 3px;
+
+    text-align: center;
+}
+
+
+/*==========================================================
+    CURRENT WORD
+==========================================================*/
+
+#word-text {
+    max-width: 96%;
+
+    margin-bottom: clamp(
+        16px,
+        3vh,
+        34px
+    );
+
+    color: var(--green-bright);
+
+    font-size: clamp(
+        27px,
+        3.4vw,
+        48px
+    );
+
+    font-weight: 800;
+
+    line-height: 1.2;
+
+    letter-spacing: clamp(
+        2px,
+        0.45vw,
+        7px
+    );
+
+    overflow-wrap: anywhere;
+
+    text-align: center;
+
+    text-shadow:
+        0 0 8px rgba(90, 255, 135, 0.75),
+        0 0 22px rgba(60, 255, 110, 0.30);
+}
+
+
+/*==========================================================
+    WORD INPUT
+==========================================================*/
+
+#word-input {
+    width: min(
+        68%,
+        590px
+    );
+
+    height: clamp(
+        44px,
+        6vh,
+        60px
+    );
+
+    padding: 0 18px;
+
+    color: var(--green-bright);
+    caret-color: var(--green);
+
+    outline: none;
+
+    border: 1px solid var(--green-border);
+    border-radius: 5px;
+
+    background: rgba(1, 8, 4, 0.90);
+
+    box-shadow:
+        0 0 8px rgba(60, 255, 110, 0.12),
+        inset 0 0 10px #000000;
+
+    font-size: clamp(
+        12px,
+        1.1vw,
+        16px
+    );
+
+    letter-spacing: 2px;
+
+    text-align: center;
+    text-transform: uppercase;
+}
+
+#word-input:focus {
+    border-color: var(--green);
+
+    box-shadow:
+        0 0 10px rgba(70, 255, 115, 0.22),
+        inset 0 0 10px #000000;
+}
+
+#word-input::placeholder {
+    color: #3e9257;
+
+    font-size: clamp(
+        10px,
+        0.85vw,
+        13px
+    );
+
+    opacity: 1;
+}
+
+
+/* Temporary red error animation */
+
+#word-input.error {
+    animation:
+        input-shake 0.34s ease,
+        error-flash 0.45s ease;
+}
+
+
+/* Instruction below input */
+
+.hint {
+    margin: 13px 0 0;
+
+    color: #69bd81;
+
+    font-size: clamp(
+        11px,
+        1vw,
+        15px
+    );
+
+    line-height: 1.5;
+
+    text-align: center;
+}
+
+
+/*==========================================================
+    TIMER
+==========================================================*/
+
+.timer-track {
+    width: 100%;
+
+    padding: 3px 7px;
+
+    overflow: hidden;
+
+    border: 1px solid #29200c;
+
+    background: #050503;
+}
+
+#timer-bar {
+    width: 100%;
+    height: 100%;
+
+    border-radius: 20px;
+
+    background: var(--gold);
+
+    box-shadow:
+        0 0 8px rgba(239, 201, 77, 0.45);
+
+    transition:
+        width 0.06s linear,
+        background 0.2s ease;
+}
+
+
+/*==========================================================
+    BOTTOM STATUS
+==========================================================*/
+
+.status-grid {
+    display: grid;
+
+    grid-template-columns:
+        1fr
+        1fr
+        1fr;
+
+    align-items: end;
+
+    gap: 18px;
+}
+
+.status-box {
+    text-align: center;
+}
+
+.status-box span {
+    display: block;
+
+    color: #a78e43;
+
+    font-size: clamp(
+        9px,
+        0.8vw,
+        12px
+    );
+
+    font-weight: 700;
+
+    letter-spacing: 3px;
+}
+
+.status-box strong {
+    display: block;
+
+    margin-top: 3px;
+
+    color: var(--gold);
+
+    font-size: clamp(
+        15px,
+        1.7vw,
+        23px
+    );
+
+    letter-spacing: 2px;
+}
+
+
+/*==========================================================
+    SPECTRE BRAND
+==========================================================*/
+
+.spectre-brand {
+    position: absolute;
+
+    left: 50%;
+    bottom: 10px;
+
+    transform: translateX(-50%);
+
+    color: #080f0a;
+
+    font-size: clamp(
+        10px,
+        1.15vw,
+        17px
+    );
+
+    font-weight: 900;
+
+    letter-spacing: 7px;
+
+    pointer-events: none;
+}
+
+
+/*==========================================================
+    RESULT SCREEN
+==========================================================*/
+
+.result-screen {
+    position: absolute;
+    inset: 0;
+
+    z-index: 10;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    padding: 30px;
+
+    border-radius: inherit;
+
+    background: rgba(1, 8, 4, 0.96);
+
+    text-align: center;
+}
+
+.result-screen h2 {
+    margin: 0;
+
+    font-size: clamp(
+        28px,
+        4vw,
+        54px
+    );
+
+    letter-spacing: 5px;
+}
+
+.result-screen p {
+    margin: 14px 0 25px;
+
+    color: #9fbaa6;
+
+    font-size: clamp(
+        12px,
+        1.1vw,
+        16px
+    );
+}
+
+.result-screen.success h2 {
+    color: var(--green);
+
+    text-shadow:
+        0 0 20px rgba(80, 255, 130, 0.50);
+}
+
+.result-screen.fail h2 {
+    color: var(--red);
+
+    text-shadow:
+        0 0 20px rgba(255, 75, 65, 0.40);
+}
+
+
+/*==========================================================
+    ANIMATIONS
+==========================================================*/
+
+@keyframes input-shake {
+
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+
+    25% {
+        transform: translateX(-8px);
+    }
+
+    50% {
+        transform: translateX(7px);
+    }
+
+    75% {
+        transform: translateX(-4px);
+    }
+
+}
+
+@keyframes error-flash {
+
+    0%,
+    100% {
+        border-color: var(--green);
+    }
+
+    20%,
+    70% {
+        border-color: var(--red);
+
+        box-shadow:
+            0 0 14px rgba(255, 70, 60, 0.50);
+    }
+
+}
+
+
+/*==========================================================
+    SMALL SCREEN SUPPORT
+==========================================================*/
+
+@media (max-width: 700px), (max-height: 560px) {
+
+    :root {
+        --bezel-size: 18px;
+        --tablet-radius: 45px;
+        --screen-radius: 29px;
+    }
+
+    #game {
+        padding: 8px;
+    }
+
+    .terminal {
+        gap: 7px;
+
+        padding:
+            12px
+            15px
+            10px;
+    }
+
+    header {
+        padding: 0 75px;
+    }
+
+    .eyebrow {
+        margin-bottom: 4px;
+        font-size: 10px;
+    }
+
+    h1 {
+        font-size: 20px;
+    }
+
+    .subtitle {
+        margin-top: 5px;
+        font-size: 10px;
+    }
+
+    #restart-button {
+        padding: 6px 9px;
+        font-size: 8px;
+    }
+
+    .word-panel {
+        padding: 12px;
+    }
+
+    .hint {
+        margin-top: 7px;
+        font-size: 10px;
+    }
+
+    .status-grid {
+        gap: 8px;
+    }
+
+}

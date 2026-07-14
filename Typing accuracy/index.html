@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>SPECTRE Decrypt Tablet</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <main id="game">
+
+        <!-- BLACK TABLET BODY -->
+        <section class="tablet">
+
+            <!-- Small camera in the tablet border -->
+            <div class="tablet-camera"></div>
+
+            <!-- TABLET SCREEN -->
+            <section class="terminal">
+
+                <!-- CENTRED HEADER -->
+                <header>
+
+                    <div class="header-text">
+
+                        <p class="eyebrow">
+                            SECURE TERMINAL // CIPHER RECOVERY
+                        </p>
+
+                        <h1>
+                            DECRYPT THE MESSAGE
+                        </h1>
+
+                        <p class="subtitle">
+                            Recover all classified cipher blocks before the
+                            security protocol wipes the device.
+                        </p>
+
+                    </div>
+
+                    <button
+                        id="restart-button"
+                        type="button"
+                    >
+                        Restart
+                    </button>
+
+                </header>
+
+
+                <!-- MAIN GREEN MINIGAME AREA -->
+                <section class="word-panel">
+
+                    <!-- Decorative green corners -->
+                    <span class="corner corner-top-left"></span>
+
+                    <span class="corner corner-bottom-right"></span>
+
+                    <p id="fragment-text">
+                        CIPHER BLOCK 01
+                    </p>
+
+                    <div id="word-text">
+                        INITIALIZING
+                    </div>
+
+                    <input
+                        id="word-input"
+                        type="text"
+                        autocomplete="off"
+                        autocapitalize="off"
+                        spellcheck="false"
+                        maxlength="50"
+                        placeholder="TYPE THE CIPHER HERE..."
+                    >
+
+                    <p class="hint">
+                        Type the word exactly, then press Space or Enter.
+                    </p>
+
+                </section>
+
+
+                <!-- TIMER BAR -->
+                <div class="timer-track">
+
+                    <div id="timer-bar"></div>
+
+                </div>
+
+
+                <!-- BOTTOM INFORMATION -->
+                <section class="status-grid">
+
+                    <div class="status-box">
+
+                        <span>ERRORS</span>
+
+                        <strong id="mistakes-text">
+                            0 / 10
+                        </strong>
+
+                    </div>
+
+                    <div class="status-box">
+
+                        <span>TIME</span>
+
+                        <strong id="time-text">
+                            30.0
+                        </strong>
+
+                    </div>
+
+                    <div class="status-box">
+
+                        <span>BLOCKS</span>
+
+                        <strong id="progress-text">
+                            0 / 10
+                        </strong>
+
+                    </div>
+
+                </section>
+
+
+                <!-- TABLET BRAND -->
+                <div class="spectre-brand">
+                    SPECTRE
+                </div>
+
+
+                <!-- RESULT OVERLAY -->
+                <section
+                    id="result-screen"
+                    class="result-screen hidden"
+                >
+
+                    <h2 id="result-title">
+                        ACCESS GRANTED
+                    </h2>
+
+                    <p id="result-message">
+                        Message recovered successfully.
+                    </p>
+
+                    <button
+                        id="play-again-button"
+                        type="button"
+                    >
+                        Play Again
+                    </button>
+
+                </section>
+
+            </section>
+
+        </section>
+
+    </main>
+
+
+    <script src="app.js"></script>
+
+</body>
+
+</html>
