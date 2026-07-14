@@ -687,16 +687,12 @@ h1 {
 
 .status-box strong {
     display: block;
-
     margin-top: 3px;
-
     color: var(--gold);
+    font-size: clamp(15px, 1.7vw, 23px);
 
-    font-size: clamp(
-        15px,
-        1.7vw,
-        23px
-    );
+    /* Lower number = thinner text */
+    font-weight: 10;
 
     letter-spacing: 2px;
 }
