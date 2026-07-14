@@ -1,172 +1,177 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  />
+    <meta charset="UTF-8">
 
-  <title>Strays's Training Ground</title>
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-  <style>
-    * {
-      box-sizing: border-box;
-    }
+    <title>SPECTRE Decrypt Tablet</title>
 
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #0d0d0d;
-      color: white;
-      overflow: hidden;
-    }
-
-    h1 {
-      margin: 0;
-      padding: 20px;
-      text-align: center;
-      background: #111;
-      border-bottom: 2px solid #222;
-      color: #00d9ff;
-      letter-spacing: 2px;
-      text-shadow:
-        0 0 10px #00d9ff,
-        0 0 25px rgba(0, 217, 255, 0.45);
-    }
-
-    #navigation {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 12px;
-      padding: 18px;
-      background: #151515;
-      border-bottom: 2px solid #222;
-    }
-
-    button {
-      padding: 12px 20px;
-      font-size: 15px;
-      border: 1px solid #333;
-      border-radius: 8px;
-      cursor: pointer;
-      color: white;
-      background: linear-gradient(180deg, #1f1f1f, #111);
-      transition: 0.2s ease;
-    }
-
-    button:hover {
-      background: linear-gradient(135deg, #00d9ff, #00ffb7);
-      color: black;
-      transform: scale(1.05);
-      box-shadow:
-        0 0 12px #00d9ff,
-        0 0 22px rgba(0, 255, 183, 0.45);
-    }
-
-    #game-container {
-      width: 100%;
-      height: calc(100vh - 150px);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 12px;
-      position: relative;
-      background:
-        radial-gradient(circle at center, #1a1a1a 0%, #050505 100%);
-    }
-
-    iframe {
-      width: 95%;
-      height: 100%;
-      border: 2px solid #333;
-      border-radius: 12px;
-      background: black;
-      box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
-    }
-
-    #welcome-text {
-      position: absolute;
-      font-size: 22px;
-      color: #555;
-      pointer-events: none;
-      user-select: none;
-      letter-spacing: 2px;
-      text-shadow: 0 0 12px rgba(255, 255, 255, 0.08);
-    }
-  </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-  <h1>Strays's Training Ground</h1>
 
-  <div id="navigation">
-    <button onclick="loadGame('4 digit PIN guess/index.html')">
-      🔐 4 Digit PIN Guess
-    </button>
+    <main id="game">
 
-    <button onclick="loadGame('Braille Minigame/index.html')">
-      ⠿ Braille Minigame
-    </button>
+        <!-- BLACK TABLET BODY -->
+        <section class="tablet">
 
-    <button onclick="loadGame('Follow the moving circle/index.html')">
-      🎯 Follow the Moving Circle
-    </button>
+            <!-- Small camera in the tablet border -->
+            <div class="tablet-camera"></div>
 
-    <button onclick="loadGame('Keyboard Reflex minigame/index.html')">
-      ⌨️ Keyboard Reflex
-    </button>
+            <!-- TABLET SCREEN -->
+            <section class="terminal">
 
-    <button onclick="loadGame('Hit the dots/index.html')">
-      🔥 Hit the Dots
-    </button>
+                <!-- CENTRED HEADER -->
+                <header>
 
-    <button onclick="loadGame('Tracer/index.html')">
-      ⚡ Tracer
-    </button>
+                    <div class="header-text">
 
-    <button onclick="loadGame('Memory/index.html')">
-      🧠 Memory Hack
-    </button>
+                        <p class="eyebrow">
+                            SECURE TERMINAL // CIPHER RECOVERY
+                        </p>
 
-    <button onclick="loadGame('Shapes Sequence/index.html')">
-      🔷 Shapes Sequence
-    </button>
+                        <h1>
+                            DECRYPT THE MESSAGE
+                        </h1>
 
-    <button onclick="loadGame('Key taps/index.html')">
-      🟦 Key Taps
-    </button>
+                        <p class="subtitle">
+                            Recover all classified cipher blocks before the
+                            security protocol wipes the device.
+                        </p>
 
-    <button onclick="loadGame('Lock/index.html')">
-      🔓 Lock Pick
-    </button>
-  </div>
+                    </div>
 
-  <div id="game-container">
-    <div id="welcome-text">
-      SELECT A TRAINING MODULE
-    </div>
+                    <button
+                        id="restart-button"
+                        type="button"
+                    >
+                        Restart
+                    </button>
 
-    <iframe
-      id="game-frame"
-      src=""
-      frameborder="0">
-    </iframe>
-  </div>
+                </header>
 
-  <script>
-    function loadGame(path) {
-      const frame = document.getElementById("game-frame");
-      const welcome = document.getElementById("welcome-text");
 
-      frame.src = path;
-      welcome.style.display = "none";
+                <!-- MAIN GREEN MINIGAME AREA -->
+                <section class="word-panel">
 
-      frame.onload = () => {
-        frame.focus();
-      };
-    }
-  </script>
+                    <!-- Decorative green corners -->
+                    <span class="corner corner-top-left"></span>
+
+                    <span class="corner corner-bottom-right"></span>
+
+                    <p id="fragment-text">
+                        CIPHER BLOCK 01
+                    </p>
+
+                    <div id="word-text">
+                        INITIALIZING
+                    </div>
+
+                    <input
+                        id="word-input"
+                        type="text"
+                        autocomplete="off"
+                        autocapitalize="off"
+                        spellcheck="false"
+                        maxlength="50"
+                        placeholder="TYPE THE CIPHER HERE..."
+                    >
+
+                    <p class="hint">
+                        Type the word exactly, then press Space or Enter.
+                    </p>
+
+                </section>
+
+
+                <!-- TIMER BAR -->
+                <div class="timer-track">
+
+                    <div id="timer-bar"></div>
+
+                </div>
+
+
+                <!-- BOTTOM INFORMATION -->
+                <section class="status-grid">
+
+                    <div class="status-box">
+
+                        <span>ERRORS</span>
+
+                        <strong id="mistakes-text">
+                            0 / 10
+                        </strong>
+
+                    </div>
+
+                    <div class="status-box">
+
+                        <span>TIME</span>
+
+                        <strong id="time-text">
+                            30.0
+                        </strong>
+
+                    </div>
+
+                    <div class="status-box">
+
+                        <span>BLOCKS</span>
+
+                        <strong id="progress-text">
+                            0 / 10
+                        </strong>
+
+                    </div>
+
+                </section>
+
+
+                <!-- TABLET BRAND -->
+                <div class="spectre-brand">
+                    SPECTRE
+                </div>
+
+
+                <!-- RESULT OVERLAY -->
+                <section
+                    id="result-screen"
+                    class="result-screen hidden"
+                >
+
+                    <h2 id="result-title">
+                        ACCESS GRANTED
+                    </h2>
+
+                    <p id="result-message">
+                        Message recovered successfully.
+                    </p>
+
+                    <button
+                        id="play-again-button"
+                        type="button"
+                    >
+                        Play Again
+                    </button>
+
+                </section>
+
+            </section>
+
+        </section>
+
+    </main>
+
+
+    <script src="app.js"></script>
+
 </body>
+
 </html>
