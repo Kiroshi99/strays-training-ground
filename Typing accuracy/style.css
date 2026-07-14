@@ -10,7 +10,7 @@
         Changes the tablet shape.
 
     --bezel-size:
-        Changes the thickness of the black border.
+        Changes the thickness of the black tablet border.
 ==========================================================*/
 
 :root {
@@ -55,9 +55,7 @@ body {
     margin: 0;
     overflow: hidden;
 
-    /*
-        Transparent FiveM NUI background.
-    */
+    /* Transparent FiveM background */
     background: transparent;
 
     font-family:
@@ -216,10 +214,8 @@ header {
     width: 100%;
 
     /*
-        Equal space on both sides keeps the title
-        properly centred.
-
-        The restart button is positioned separately.
+        Equal space on both sides keeps the title centred
+        while the restart button stays on the right.
     */
     padding: 0 110px;
 
@@ -229,6 +225,33 @@ header {
 .header-text {
     width: 100%;
     text-align: center;
+}
+
+
+/*==========================================================
+    SPECTRE TITLE
+==========================================================*/
+
+.spectre-title {
+    margin: 0 0 5px;
+
+    color: var(--green-bright);
+
+    font-size: clamp(
+        20px,
+        2vw,
+        30px
+    );
+
+    font-weight: 900;
+    line-height: 1;
+
+    letter-spacing: 8px;
+    text-align: center;
+
+    text-shadow:
+        0 0 8px rgba(92, 255, 138, 0.75),
+        0 0 20px rgba(92, 255, 138, 0.30);
 }
 
 
@@ -277,7 +300,7 @@ h1 {
 }
 
 
-/* Description below the main title */
+/* Description below main title */
 
 .subtitle {
     max-width: 760px;
@@ -329,8 +352,8 @@ h1 {
 
 
 /*
-    Absolute positioning stops the restart button
-    from pushing the title away from the centre.
+    The button is separated from the title so it
+    does not push the title away from the centre.
 */
 
 #restart-button {
@@ -353,7 +376,7 @@ h1 {
 /*==========================================================
     MAIN GREEN GAME AREA
 
-    The old shell/log section has been removed.
+    The old shell and log panel are removed.
 ==========================================================*/
 
 .word-panel {
@@ -680,34 +703,6 @@ h1 {
 
 
 /*==========================================================
-    SPECTRE BRAND
-==========================================================*/
-
-.spectre-brand {
-    position: absolute;
-
-    left: 50%;
-    bottom: 10px;
-
-    transform: translateX(-50%);
-
-    color: #080f0a;
-
-    font-size: clamp(
-        10px,
-        1.15vw,
-        17px
-    );
-
-    font-weight: 900;
-
-    letter-spacing: 7px;
-
-    pointer-events: none;
-}
-
-
-/*==========================================================
     RESULT SCREEN
 ==========================================================*/
 
@@ -842,8 +837,17 @@ h1 {
         padding: 0 75px;
     }
 
+    .spectre-title {
+        margin-bottom: 3px;
+
+        font-size: 17px;
+
+        letter-spacing: 5px;
+    }
+
     .eyebrow {
         margin-bottom: 4px;
+
         font-size: 10px;
     }
 
@@ -853,11 +857,13 @@ h1 {
 
     .subtitle {
         margin-top: 5px;
+
         font-size: 10px;
     }
 
     #restart-button {
         padding: 6px 9px;
+
         font-size: 8px;
     }
 
@@ -867,6 +873,7 @@ h1 {
 
     .hint {
         margin-top: 7px;
+
         font-size: 10px;
     }
 
