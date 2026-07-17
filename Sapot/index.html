@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Untangle — Circuit Breach</title>
+
+  <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+  <main class="hack-panel">
+
+    <div class="board-frame">
+      <svg
+        id="board"
+        viewBox="0 0 640 460"
+        aria-label="Untangle puzzle board"
+      ></svg>
+    </div>
+
+    <div class="status-row">
+      <p class="hint">
+        Drag dots to untangle.<br>
+        No lines should cross.
+      </p>
+
+      <p class="crossings">
+        CROSSINGS:
+        <span id="crossings">0</span>
+      </p>
+    </div>
+
+    <div class="timer-track">
+      <div id="timer-fill" class="timer-fill"></div>
+    </div>
+
+    <p class="timer-label">
+      Time: <span id="time">60.0</span>s
+    </p>
+
+    <div class="controls">
+      <button id="restart" type="button">
+        Restart
+      </button>
+
+      <label class="check">
+        <input type="checkbox" id="show-deg">
+        Show line counts
+      </label>
+    </div>
+
+    <div id="overlay" class="overlay" hidden>
+      <p id="overlay-text">
+        BREACH SUCCESSFUL
+      </p>
+
+      <button id="again" type="button">
+        Run again
+      </button>
+    </div>
+
+  </main>
+
+  <script src="./game.js"></script>
+</body>
+</html>
