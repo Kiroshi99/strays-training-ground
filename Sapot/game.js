@@ -16,9 +16,10 @@ const CONFIG = {
   // Time limit in seconds.
   timeLimit: 60,
 
-  // Node sizes based on how many lines connect to the node.
+  // Node size according to its number of connections.
   nodeRadius: {
     7: 17,
+    6: 16,
     5: 15,
     4: 13,
     3: 12,
@@ -26,52 +27,79 @@ const CONFIG = {
   },
 };
 
-/*
-  Node 0 has seven connections.
-  Node 1 has five connections.
-  Nodes 2–4 have four connections.
-  Node 5 has two connections.
-  Nodes 6–7 have three connections.
-*/
-
-const EDGES = [
-  [0, 1],
-  [0, 2],
-  [0, 3],
-  [0, 4],
-
-  [1, 2],
-  [1, 3],
-  [1, 4],
-
-  [2, 3],
-
-  [0, 5],
-  [4, 5],
-
-  [0, 6],
-  [1, 6],
-  [4, 6],
-
-  [0, 7],
-  [2, 7],
-  [3, 7],
-];
-
 const NODE_COUNT = 8;
 
-const DEGREE = Array(NODE_COUNT).fill(0);
+/*
+  Each round randomly selects one of these graphs:
 
-EDGES.forEach(([start, end]) => {
-  DEGREE[start]++;
-  DEGREE[end]++;
-});
+  1. One node with 7 lines and two nodes with 5 lines.
+  2. One node with 5 lines and three nodes with 3 lines.
+
+  Node IDs are shuffled so the special nodes change each round.
+*/
+
+const GRAPH_PRESETS = [
+  {
+    name: "seven-and-two-fives",
+
+    edges: [
+      [0, 1],
+      [0, 2],
+      [0, 3],
+      [0, 4],
+      [0, 5],
+      [0, 6],
+      [0, 7],
+
+      [1, 2],
+      [2, 3],
+      [3, 1],
+
+      [4, 1],
+      [4, 2],
+
+      [5, 1],
+      [5, 3],
+
+      [6, 2],
+      [6, 3],
+
+      [7, 3],
+      [7, 5],
+    ],
+  },
+
+  {
+    name: "one-five-and-three-threes",
+
+    edges: [
+      [0, 1],
+      [1, 2],
+      [2, 3],
+      [3, 4],
+      [4, 5],
+      [5, 6],
+      [6, 7],
+      [7, 0],
+
+      [0, 2],
+      [0, 3],
+      [0, 4],
+      [4, 7],
+      [5, 7],
+    ],
+  },
+];
+
+let EDGES = [];
+let DEGREE = [];
 
 /* ============================================================
    DOM ELEMENTS
    ============================================================ */
 
-const svg = document.getElementById("board");
+const svg =
+  document.getElementById("board");
 
 const crossingsElement =
   document.getElementById("crossings");
@@ -156,14 +184,48 @@ function shuffleArray(array) {
 }
 
 /*
+  Selects a random graph type and randomly changes
+  which node receives each connection count.
+*/
+
+function selectRandomGraph() {
+  const preset =
+    GRAPH_PRESETS[
+      Math.floor(
+        Math.random() * GRAPH_PRESETS.length
+      )
+    ];
+
+  const nodePermutation = shuffleArray(
+    [...Array(NODE_COUNT).keys()]
+  );
+
+  EDGES = preset.edges.map(([start, end]) => [
+    nodePermutation[start],
+    nodePermutation[end],
+  ]);
+
+  DEGREE = Array(NODE_COUNT).fill(0);
+
+  EDGES.forEach(([start, end]) => {
+    DEGREE[start]++;
+    DEGREE[end]++;
+  });
+}
+
+/*
   Checks whether two separate line segments cross.
 
-  Shared endpoints are ignored elsewhere because connected
-  lines are allowed to touch at their common node.
+  Shared endpoints are ignored because connected lines
+  are allowed to touch at their common node.
 */
 
 function segmentsCross(a, b, c, d) {
-  function orientation(point1, point2, point3) {
+  function orientation(
+    point1,
+    point2,
+    point3
+  ) {
     const result =
       (point2.x - point1.x) *
         (point3.y - point1.y) -
@@ -173,11 +235,17 @@ function segmentsCross(a, b, c, d) {
     return Math.sign(result);
   }
 
-  const orientation1 = orientation(a, b, c);
-  const orientation2 = orientation(a, b, d);
+  const orientation1 =
+    orientation(a, b, c);
 
-  const orientation3 = orientation(c, d, a);
-  const orientation4 = orientation(c, d, b);
+  const orientation2 =
+    orientation(a, b, d);
+
+  const orientation3 =
+    orientation(c, d, a);
+
+  const orientation4 =
+    orientation(c, d, b);
 
   return (
     orientation1 !== orientation2 &&
@@ -195,18 +263,15 @@ function createScrambledLayout() {
   const centreX = CONFIG.width / 2;
   const centreY = CONFIG.height / 2;
 
-  /*
-    Randomises which node receives each position around
-    the centre of the board.
-  */
-
   const positions = shuffleArray(
     [...Array(NODE_COUNT).keys()]
   );
 
   points = positions.map((position) => {
     const angle =
-      (position / NODE_COUNT) * Math.PI * 2 -
+      (position / NODE_COUNT) *
+        Math.PI *
+        2 -
       Math.PI / 2;
 
     const radius =
@@ -220,13 +285,15 @@ function createScrambledLayout() {
 
       y:
         centreY +
-        Math.sin(angle) * radius * 0.75 +
+        Math.sin(angle) *
+          radius *
+          0.75 +
         (Math.random() * 40 - 20),
     };
   });
 
   /*
-    Do not allow the game to begin already solved
+    Do not allow the game to start already solved
     or with barely any crossings.
   */
 
@@ -252,17 +319,18 @@ function countCrossings() {
     firstEdgeIndex++
   ) {
     for (
-      let secondEdgeIndex = firstEdgeIndex + 1;
+      let secondEdgeIndex =
+        firstEdgeIndex + 1;
+
       secondEdgeIndex < EDGES.length;
+
       secondEdgeIndex++
     ) {
-      const [a, b] = EDGES[firstEdgeIndex];
-      const [c, d] = EDGES[secondEdgeIndex];
+      const [a, b] =
+        EDGES[firstEdgeIndex];
 
-      /*
-        Lines that share the same node are supposed
-        to touch, so they are not counted.
-      */
+      const [c, d] =
+        EDGES[secondEdgeIndex];
 
       const sharesNode =
         a === c ||
@@ -282,8 +350,13 @@ function countCrossings() {
       );
 
       if (isCrossing) {
-        crossingEdges.add(firstEdgeIndex);
-        crossingEdges.add(secondEdgeIndex);
+        crossingEdges.add(
+          firstEdgeIndex
+        );
+
+        crossingEdges.add(
+          secondEdgeIndex
+        );
 
         crossingCount++;
       }
@@ -316,53 +389,74 @@ function buildBoard() {
   svg.append(edgeGroup, nodeGroup);
 
   /*
-    Create every connecting line first so the nodes
+    Create the connecting lines first so nodes
     always appear above the lines.
   */
 
   EDGES.forEach(() => {
-    const line = createSvgElement("line", {
-      class: "edge",
-    });
+    const line = createSvgElement(
+      "line",
+      {
+        class: "edge",
+      }
+    );
 
     edgeGroup.appendChild(line);
     lineElements.push(line);
   });
 
   /*
-    Create node circles, glows and optional labels.
+    Create node circles, glows and labels.
   */
 
-  points.forEach((point, nodeIndex) => {
-    const nodeRadius =
-      CONFIG.nodeRadius[DEGREE[nodeIndex]] || 12;
+  points.forEach(
+    (point, nodeIndex) => {
+      const nodeRadius =
+        CONFIG.nodeRadius[
+          DEGREE[nodeIndex]
+        ] || 12;
 
-    const glow = createSvgElement("circle", {
-      class: "node-glow",
-      r: nodeRadius + 4,
-    });
+      const glow = createSvgElement(
+        "circle",
+        {
+          class: "node-glow",
+          r: nodeRadius + 4,
+        }
+      );
 
-    const dot = createSvgElement("circle", {
-      class: "node",
-      r: nodeRadius,
-      "data-index": nodeIndex,
-    });
+      const dot = createSvgElement(
+        "circle",
+        {
+          class: "node",
+          r: nodeRadius,
+          "data-index": nodeIndex,
+        }
+      );
 
-    const label = createSvgElement("text", {
-      class: "deg-label",
-    });
+      const label = createSvgElement(
+        "text",
+        {
+          class: "deg-label",
+        }
+      );
 
-    label.textContent = DEGREE[nodeIndex];
+      label.textContent =
+        DEGREE[nodeIndex];
 
-    nodeGroup.append(glow, dot, label);
+      nodeGroup.append(
+        glow,
+        dot,
+        label
+      );
 
-    nodeElements.push({
-      dot,
-      glow,
-    });
+      nodeElements.push({
+        dot,
+        glow,
+      });
 
-    labelElements.push(label);
-  });
+      labelElements.push(label);
+    }
+  );
 
   renderBoard();
 }
@@ -374,16 +468,23 @@ function buildBoard() {
 function renderBoard() {
   const result = countCrossings();
 
-  const crossingCount = result.count;
-  const crossingEdges = result.crossingEdges;
+  const crossingCount =
+    result.count;
+
+  const crossingEdges =
+    result.crossingEdges;
 
   /*
     Update every line position and colour.
   */
 
   EDGES.forEach(
-    ([startNode, endNode], edgeIndex) => {
-      const line = lineElements[edgeIndex];
+    (
+      [startNode, endNode],
+      edgeIndex
+    ) => {
+      const line =
+        lineElements[edgeIndex];
 
       line.setAttribute(
         "x1",
@@ -416,30 +517,53 @@ function renderBoard() {
     Update node and label positions.
   */
 
-  points.forEach((point, nodeIndex) => {
-    const node = nodeElements[nodeIndex];
+  points.forEach(
+    (point, nodeIndex) => {
+      const node =
+        nodeElements[nodeIndex];
 
-    node.dot.setAttribute("cx", point.x);
-    node.dot.setAttribute("cy", point.y);
+      node.dot.setAttribute(
+        "cx",
+        point.x
+      );
 
-    node.glow.setAttribute("cx", point.x);
-    node.glow.setAttribute("cy", point.y);
+      node.dot.setAttribute(
+        "cy",
+        point.y
+      );
 
-    labelElements[nodeIndex].setAttribute(
-      "x",
-      point.x
-    );
+      node.glow.setAttribute(
+        "cx",
+        point.x
+      );
 
-    labelElements[nodeIndex].setAttribute(
-      "y",
-      point.y + 4
-    );
+      node.glow.setAttribute(
+        "cy",
+        point.y
+      );
 
-    labelElements[nodeIndex].style.display =
-      showDegreeCheckbox.checked
-        ? ""
-        : "none";
-  });
+      labelElements[
+        nodeIndex
+      ].setAttribute(
+        "x",
+        point.x
+      );
+
+      labelElements[
+        nodeIndex
+      ].setAttribute(
+        "y",
+        point.y + 4
+      );
+
+      labelElements[
+        nodeIndex
+      ].style.display =
+        showDegreeCheckbox.checked
+          ? ""
+          : "none";
+    }
+  );
 
   crossingsElement.textContent =
     crossingCount;
@@ -450,10 +574,13 @@ function renderBoard() {
   );
 
   /*
-    The player wins immediately when no lines cross.
+    The player wins when no lines cross.
   */
 
-  if (crossingCount === 0 && !gameOver) {
+  if (
+    crossingCount === 0 &&
+    !gameOver
+  ) {
     endGame(true);
   }
 }
@@ -468,12 +595,14 @@ function getBoardCoordinates(event) {
 
   return {
     x:
-      ((event.clientX - boardRectangle.left) /
+      ((event.clientX -
+        boardRectangle.left) /
         boardRectangle.width) *
       CONFIG.width,
 
     y:
-      ((event.clientY - boardRectangle.top) /
+      ((event.clientY -
+        boardRectangle.top) /
         boardRectangle.height) *
       CONFIG.height,
   };
@@ -501,7 +630,9 @@ svg.addEventListener(
       targetNode.dataset.index
     );
 
-    svg.setPointerCapture(event.pointerId);
+    svg.setPointerCapture(
+      event.pointerId
+    );
   }
 );
 
@@ -518,13 +649,12 @@ svg.addEventListener(
     const pointer =
       getBoardCoordinates(event);
 
-    const margin = CONFIG.margin;
+    const margin =
+      CONFIG.margin;
 
-    /*
-      Keep the dragged node inside the board.
-    */
-
-    points[draggedNodeIndex].x = Math.max(
+    points[
+      draggedNodeIndex
+    ].x = Math.max(
       margin,
       Math.min(
         CONFIG.width - margin,
@@ -532,7 +662,9 @@ svg.addEventListener(
       )
     );
 
-    points[draggedNodeIndex].y = Math.max(
+    points[
+      draggedNodeIndex
+    ].y = Math.max(
       margin,
       Math.min(
         CONFIG.height - margin,
@@ -564,18 +696,23 @@ svg.addEventListener(
 
 function updateTimer() {
   const elapsedSeconds =
-    (performance.now() - startTime) / 1000;
+    (performance.now() -
+      startTime) /
+    1000;
 
-  const remainingSeconds = Math.max(
-    0,
-    CONFIG.timeLimit - elapsedSeconds
-  );
+  const remainingSeconds =
+    Math.max(
+      0,
+      CONFIG.timeLimit -
+        elapsedSeconds
+    );
 
   timeElement.textContent =
     remainingSeconds.toFixed(1);
 
   const remainingFraction =
-    remainingSeconds / CONFIG.timeLimit;
+    remainingSeconds /
+    CONFIG.timeLimit;
 
   timerFill.style.width =
     `${remainingFraction * 100}%`;
@@ -591,7 +728,9 @@ function updateTimer() {
   }
 
   animationFrameId =
-    requestAnimationFrame(updateTimer);
+    requestAnimationFrame(
+      updateTimer
+    );
 }
 
 /* ============================================================
@@ -604,25 +743,38 @@ function startGame() {
 
   overlay.hidden = true;
 
+  // Choose a new random graph every round.
+  selectRandomGraph();
+
   createScrambledLayout();
   buildBoard();
 
   startTime = performance.now();
 
-  if (animationFrameId !== null) {
-    cancelAnimationFrame(animationFrameId);
+  if (
+    animationFrameId !== null
+  ) {
+    cancelAnimationFrame(
+      animationFrameId
+    );
   }
 
   animationFrameId =
-    requestAnimationFrame(updateTimer);
+    requestAnimationFrame(
+      updateTimer
+    );
 }
 
 function endGame(won) {
   gameOver = true;
   draggedNodeIndex = null;
 
-  if (animationFrameId !== null) {
-    cancelAnimationFrame(animationFrameId);
+  if (
+    animationFrameId !== null
+  ) {
+    cancelAnimationFrame(
+      animationFrameId
+    );
   }
 
   overlayText.textContent = won
