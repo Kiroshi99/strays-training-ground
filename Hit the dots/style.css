@@ -74,11 +74,74 @@ body {
 
 #target {
   position: absolute;
-  width: 48px;
-  height: 48px;
+  width: 56px;
+  height: 56px;
   display: none;
-  cursor: pointer;
+  cursor: crosshair;
   border-radius: 50%;
+  transform-origin: center;
+  touch-action: none;
+  user-select: none;
+
+  /* Original CSS-built aim target: red core, darker rim and soft glow. */
+  background:
+    radial-gradient(circle at 34% 30%, rgba(255, 255, 255, 0.9) 0 5%, transparent 6%),
+    radial-gradient(circle,
+      #ff6b78 0 18%,
+      #ef3347 19% 38%,
+      #b91c2d 39% 61%,
+      #6b101d 62% 100%);
+
+  border: 2px solid rgba(255, 132, 145, 0.95);
+  box-shadow:
+    0 0 10px rgba(255, 52, 74, 0.95),
+    0 0 24px rgba(255, 52, 74, 0.55),
+    inset 0 0 10px rgba(255, 255, 255, 0.12),
+    inset 0 -8px 14px rgba(56, 5, 14, 0.5);
+}
+
+/* Inner aiming ring. */
+#target::before {
+  content: "";
+  position: absolute;
+  inset: 23%;
+  border: 2px solid rgba(255, 255, 255, 0.72);
+  border-radius: 50%;
+  box-shadow: 0 0 5px rgba(255, 255, 255, 0.28);
+  pointer-events: none;
+}
+
+/* Centre dot. */
+#target::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 7px;
+  height: 7px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 0 6px rgba(255, 255, 255, 0.9);
+  pointer-events: none;
+}
+
+/* Brief confirmation flash after a successful hit. */
+#target.hit {
+  background:
+    radial-gradient(circle at 34% 30%, rgba(255, 255, 255, 0.9) 0 5%, transparent 6%),
+    radial-gradient(circle,
+      #74f5b0 0 18%,
+      #22c97a 19% 38%,
+      #118958 39% 61%,
+      #0a4e36 62% 100%);
+
+  border-color: rgba(139, 255, 193, 0.95);
+  box-shadow:
+    0 0 10px rgba(45, 230, 136, 0.95),
+    0 0 24px rgba(45, 230, 136, 0.55),
+    inset 0 0 10px rgba(255, 255, 255, 0.12),
+    inset 0 -8px 14px rgba(5, 56, 35, 0.45);
 }
 
 #difficulty-container {
