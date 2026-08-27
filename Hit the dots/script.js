@@ -10,81 +10,48 @@ const resultBox = document.createElement("div");
 resultBox.id = "result-box";
 gameArea.appendChild(resultBox);
 
-const redTarget = `
-radial-gradient(circle,
-  white 0%,
-  white 6%,
-
-  red 7%,
-  red 20%,
-
-  white 21%,
-  white 26%,
-
-  red 27%,
-  red 55%,
-
-  rgba(255, 0, 0, 0.65) 70%,
-  rgba(255, 0, 0, 0.15) 100%
-)`;
-
-const greenTarget = `
-radial-gradient(circle,
-  white 0%,
-  white 6%,
-
-  #00ff66 7%,
-  #00ff66 20%,
-
-  white 21%,
-  white 26%,
-
-  #00ff66 27%,
-  #00ff66 55%,
-
-  rgba(0, 255, 102, 0.65) 70%,
-  rgba(0, 255, 102, 0.15) 100%
-)`;
-
+// Tuned to feel progressively harder without relying on invisible hitboxes.
+// target lifetime is the reaction window; the visible target and clickable
+// target shrink together because the click handler lives on #target itself.
 const difficulties = {
   easy: {
-    gameTime: 45,
-    dotTime: 1000,
-    shrinkTime: 1000,
-    maxHits: 14,
+    gameTime: 35,
+    dotTime: 1100,
+    shrinkTime: 1100,
+    maxHits: 15,
     maxMissed: 3,
-    targetSize: 50,
-    clickBonus: 22
+    targetSize: 55,
+    spawnDelay: 220
   },
 
   medium: {
-    gameTime: 22,
-    dotTime: 600,
-    shrinkTime: 600,
-    maxHits: 14,
+    gameTime: 28,
+    dotTime: 850,
+    shrinkTime: 850,
+    maxHits: 15,
     maxMissed: 3,
-    targetSize: 48,
-    clickBonus: 16
+    targetSize: 55,
+    spawnDelay: 180
   },
 
   hard: {
-    gameTime: 20,
-    dotTime: 550,
-    shrinkTime: 550,
-    maxHits: 14,
+    gameTime: 24,
+    dotTime: 650,
+    shrinkTime: 650,
+    maxHits: 15,
     maxMissed: 3,
-    targetSize: 48,
-    clickBonus: 18
+    targetSize: 55,
+    spawnDelay: 150
   },
 
   extreme: {
-    gameTime: 18,
-    dotTime: 400,
-    shrinkTime: 400,
-    maxHits: 14,
+    gameTime: 22,
+    dotTime: 500,
+    shrinkTime: 500,
+    maxHits: 15,
     maxMissed: 3,
-    targetSize: 48,
-    clickBonus: 16
+    targetSize: 55,
+    spawnDelay: 120
   }
 };
 
@@ -100,20 +67,24 @@ let shrinkTime = difficulties[currentDifficulty].shrinkTime;
 let maxHits = difficulties[currentDifficulty].maxHits;
 let maxMissed = difficulties[currentDifficulty].maxMissed;
 let targetSize = difficulties[currentDifficulty].targetSize;
-let clickBonus = difficulties[currentDifficulty].clickBonus;
+let spawnDelay = difficulties[currentDifficulty].spawnDelay;
 
 let gameTimer;
 let dotTimeout;
 let shrinkAnimation;
+let spawnTimeout;
 
 let gameRunning = false;
 let clickedLock = false;
 
-let targetCenterX = 0;
-let targetCenterY = 0;
-
 startBtn.addEventListener("click", startGame);
-gameArea.addEventListener("click", checkHit);
+
+// Only the actual target is clickable. CSS transforms affect hit testing,
+// so as the target shrinks, the clickable area shrinks with it.
+target.addEventListener("click", event => {
+  event.stopPropagation();
+  hitTarget();
+});
 
 document.querySelectorAll(".difficulty-btn").forEach(button => {
   button.addEventListener("click", () => {
@@ -124,23 +95,14 @@ document.querySelectorAll(".difficulty-btn").forEach(button => {
     });
 
     button.classList.add("active");
-
     currentDifficulty = button.dataset.difficulty;
-
-    gameTime = difficulties[currentDifficulty].gameTime;
-    dotTime = difficulties[currentDifficulty].dotTime;
-    shrinkTime = difficulties[currentDifficulty].shrinkTime;
-    maxHits = difficulties[currentDifficulty].maxHits;
-    maxMissed = difficulties[currentDifficulty].maxMissed;
-    targetSize = difficulties[currentDifficulty].targetSize;
-    clickBonus = difficulties[currentDifficulty].clickBonus;
+    applyDifficulty(currentDifficulty);
 
     hits = 0;
     missed = 0;
     timeLeft = gameTime;
 
-    hitsText.textContent = `HITS: ${hits}/${maxHits}`;
-    missedText.textContent = `MISSED: ${missed}/${maxMissed}`;
+    updateCounters();
     message.textContent = `Difficulty selected: ${currentDifficulty.toUpperCase()}`;
 
     resultBox.className = "";
@@ -151,7 +113,27 @@ document.querySelectorAll(".difficulty-btn").forEach(button => {
   });
 });
 
+function applyDifficulty(name) {
+  const config = difficulties[name];
+
+  gameTime = config.gameTime;
+  dotTime = config.dotTime;
+  shrinkTime = config.shrinkTime;
+  maxHits = config.maxHits;
+  maxMissed = config.maxMissed;
+  targetSize = config.targetSize;
+  spawnDelay = config.spawnDelay;
+}
+
+function updateCounters() {
+  hitsText.textContent = `HITS: ${hits}/${maxHits}`;
+  missedText.textContent = `MISSED: ${missed}/${maxMissed}`;
+}
+
 function startGame() {
+  clearGameTimers();
+  applyDifficulty(currentDifficulty);
+
   hits = 0;
   missed = 0;
   timeLeft = gameTime;
@@ -159,8 +141,7 @@ function startGame() {
   gameRunning = true;
   clickedLock = false;
 
-  hitsText.textContent = `HITS: ${hits}/${maxHits}`;
-  missedText.textContent = `MISSED: ${missed}/${maxMissed}`;
+  updateCounters();
   message.textContent = "Click the targets before they disappear!";
 
   resultBox.className = "";
@@ -171,10 +152,12 @@ function startGame() {
   progress.style.transition = "none";
   progress.style.width = "100%";
 
-  setTimeout(() => {
-    progress.style.transition = `width ${gameTime}s linear`;
-    progress.style.width = "0%";
-  }, 20);
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      progress.style.transition = `width ${gameTime}s linear`;
+      progress.style.width = "0%";
+    });
+  });
 
   startGameTimer();
   spawnTarget();
@@ -196,145 +179,114 @@ function spawnTarget() {
   if (!gameRunning) return;
 
   clearTimeout(dotTimeout);
+  clearTimeout(spawnTimeout);
 
   if (shrinkAnimation) {
     shrinkAnimation.cancel();
+    shrinkAnimation = null;
   }
 
   clickedLock = false;
+  target.classList.remove("hit");
 
   const areaWidth = gameArea.clientWidth;
   const areaHeight = gameArea.clientHeight;
+  const padding = 12;
 
   target.style.width = `${targetSize}px`;
   target.style.height = `${targetSize}px`;
-  target.style.borderRadius = "50%";
-  target.style.overflow = "hidden";
-
-  target.style.background = redTarget;
-  target.style.backgroundSize = "100% 100%";
-  target.style.backgroundPosition = "center";
-  target.style.backgroundRepeat = "no-repeat";
-
-  target.style.boxShadow = `
-    0 0 8px #ff0000,
-    0 0 18px #ff0000,
-    0 0 35px rgba(255, 0, 0, 0.8)
-  `;
-
   target.style.transform = "scale(1)";
 
-  const x = Math.random() * (areaWidth - targetSize);
-  const y = Math.random() * (areaHeight - targetSize);
+  const maxX = Math.max(padding, areaWidth - targetSize - padding);
+  const maxY = Math.max(padding, areaHeight - targetSize - padding);
+  const x = padding + Math.random() * Math.max(0, maxX - padding);
+  const y = padding + Math.random() * Math.max(0, maxY - padding);
 
   target.style.left = `${x}px`;
   target.style.top = `${y}px`;
   target.style.display = "block";
 
-  targetCenterX = x + targetSize / 2;
-  targetCenterY = y + targetSize / 2;
-
-  setTimeout(() => {
-    if (!gameRunning || clickedLock) return;
-
-    shrinkAnimation = target.animate(
-      [
-        { transform: "scale(1)" },
-        { transform: "scale(0.45)" }
-      ],
-      {
-        duration: shrinkTime,
-        easing: "linear",
-        fill: "forwards"
-      }
-    );
-  }, 20);
+  // Shrink the rendered element itself. The browser also shrinks its
+  // hit-tested area, so there is no hidden click bonus around the dot.
+  shrinkAnimation = target.animate(
+    [
+      { transform: "scale(1)" },
+      { transform: "scale(0.25)" }
+    ],
+    {
+      duration: shrinkTime,
+      easing: "linear",
+      fill: "forwards"
+    }
+  );
 
   dotTimeout = setTimeout(() => {
     if (!gameRunning || clickedLock) return;
 
     missed++;
-    missedText.textContent = `MISSED: ${missed}/${maxMissed}`;
+    updateCounters();
 
     target.style.display = "none";
 
     if (missed >= maxMissed) {
       endGame(false);
     } else {
-      spawnTarget();
+      spawnTimeout = setTimeout(spawnTarget, spawnDelay);
     }
   }, dotTime);
 }
 
-function checkHit(event) {
-  if (!gameRunning || clickedLock) return;
-
-  const rect = gameArea.getBoundingClientRect();
-
-  const clickX = event.clientX - rect.left;
-  const clickY = event.clientY - rect.top;
-
-  const distance = Math.hypot(
-    clickX - targetCenterX,
-    clickY - targetCenterY
-  );
-
-  const clickRadius = targetSize / 2 + clickBonus;
-
-  if (distance <= clickRadius) {
-    hitTarget();
-  }
-}
-
 function hitTarget() {
-  if (!gameRunning || clickedLock) return;
+  if (!gameRunning || clickedLock || target.style.display === "none") return;
 
   clickedLock = true;
-
   clearTimeout(dotTimeout);
 
   if (shrinkAnimation) {
     shrinkAnimation.cancel();
+    shrinkAnimation = null;
   }
 
   hits++;
-  hitsText.textContent = `HITS: ${hits}/${maxHits}`;
+  updateCounters();
 
   target.style.transform = "scale(1)";
-  target.style.background = greenTarget;
-  target.style.backgroundSize = "100% 100%";
-  target.style.borderRadius = "50%";
-
-  target.style.boxShadow = `
-    0 0 8px #00ff66,
-    0 0 18px #00ff66,
-    0 0 35px rgba(0, 255, 102, 0.8)
-  `;
+  target.classList.add("hit");
 
   setTimeout(() => {
     target.style.display = "none";
+    target.classList.remove("hit");
 
     if (hits >= maxHits) {
       endGame(true);
-    } else {
-      spawnTarget();
+    } else if (gameRunning) {
+      spawnTimeout = setTimeout(spawnTarget, spawnDelay);
     }
-  }, 120);
+  }, 110);
 }
 
-function endGame(won) {
-  gameRunning = false;
-  clickedLock = false;
-
+function clearGameTimers() {
   clearInterval(gameTimer);
   clearTimeout(dotTimeout);
+  clearTimeout(spawnTimeout);
 
   if (shrinkAnimation) {
     shrinkAnimation.cancel();
+    shrinkAnimation = null;
   }
+}
+
+function endGame(won) {
+  if (!gameRunning) return;
+
+  gameRunning = false;
+  clickedLock = false;
+
+  clearGameTimers();
 
   target.style.display = "none";
   target.style.transform = "scale(1)";
+  target.classList.remove("hit");
 
   progress.style.transition = "none";
 
