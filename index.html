@@ -2,279 +2,114 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
 
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  />
+  <title>Strays Rhythm Lock</title>
 
-  <title>Strays's Training Ground</title>
-
-  <style>
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      min-height: 100vh;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      font-family: Arial, sans-serif;
-      background: #0d0d0d;
-      color: white;
-      overflow: hidden;
-    }
-
-    h1 {
-      margin: 0;
-      padding: 20px;
-      text-align: center;
-      background: #111;
-      border-bottom: 2px solid #222;
-      color: #00d9ff;
-      letter-spacing: 2px;
-
-      text-shadow:
-        0 0 10px #00d9ff,
-        0 0 25px rgba(0, 217, 255, 0.45);
-    }
-
-    #navigation {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 12px;
-      padding: 18px;
-      background: #151515;
-      border-bottom: 2px solid #222;
-
-      flex-shrink: 0;
-      max-height: 35vh;
-      overflow-y: auto;
-    }
-
-    button {
-      padding: 12px 20px;
-      font-size: 15px;
-      border: 1px solid #333;
-      border-radius: 8px;
-      cursor: pointer;
-      color: white;
-
-      background: linear-gradient(
-        180deg,
-        #1f1f1f,
-        #111
-      );
-
-      transition: 0.2s ease;
-    }
-
-    button:hover {
-      background: linear-gradient(
-        135deg,
-        #00d9ff,
-        #00ffb7
-      );
-
-      color: black;
-      transform: scale(1.05);
-
-      box-shadow:
-        0 0 12px #00d9ff,
-        0 0 22px rgba(0, 255, 183, 0.45);
-    }
-
-    #game-container {
-      width: 100%;
-      flex: 1;
-      min-height: 0;
-
-      display: flex;
-      justify-content: center;
-      align-items: center;
-
-      padding: 12px;
-      position: relative;
-
-      background:
-        radial-gradient(
-          circle at center,
-          #1a1a1a 0%,
-          #050505 100%
-        );
-    }
-
-    iframe {
-      width: 95%;
-      height: 100%;
-      border: 2px solid #333;
-      border-radius: 12px;
-      background: black;
-
-      box-shadow:
-        0 0 20px rgba(0, 0, 0, 0.6);
-    }
-
-    #welcome-text {
-      position: absolute;
-      font-size: 22px;
-      color: #555;
-      pointer-events: none;
-      user-select: none;
-      letter-spacing: 2px;
-      text-align: center;
-
-      text-shadow:
-        0 0 12px rgba(255, 255, 255, 0.08);
-    }
-
-    /* MOBILE RESPONSIVE */
-
-    @media (max-width: 600px) {
-      h1 {
-        font-size: 20px;
-        padding: 15px;
-      }
-
-      #navigation {
-        gap: 8px;
-        padding: 10px;
-      }
-
-      button {
-        padding: 10px 12px;
-        font-size: 12px;
-      }
-
-      iframe {
-        width: 100%;
-      }
-
-      #welcome-text {
-        font-size: 16px;
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
-  <h1>Strays's Training Ground</h1>
+<main class="game">
 
-  <!-- ===================================
-       TRAINING MODULE NAVIGATION
-  =================================== -->
+  <h2>STRAYS RHYTHM LOCK</h2>
 
-  <div id="navigation">
-
-    <button onclick="loadGame('4 digit PIN guess/index.html')">
-      🔐 4 Digit PIN Guess
-    </button>
-
-    <button onclick="loadGame('Braille Minigame/index.html')">
-      ⠿ Braille Minigame
-    </button>
-
-    <button onclick="loadGame('Follow the moving circle/index.html')">
-      🎯 Follow the Moving Circle
-    </button>
-
-    <button onclick="loadGame('Keyboard Reflex minigame/index.html')">
-      ⌨️ Keyboard Reflex
-    </button>
-
-    <button onclick="loadGame('Hit the dots/index.html')">
-      🔥 Hit the Dots
-    </button>
-
-    <button onclick="loadGame('Tracer/index.html')">
-      ⚡ Tracer
-    </button>
-
-    <button onclick="loadGame('Memory/index.html')">
-      🧠 Memory Hack
-    </button>
-
-    <button onclick="loadGame('Shapes Sequence/index.html')">
-      🔷 Shapes Sequence
-    </button>
-
-    <button onclick="loadGame('Key taps/index.html')">
-      🟦 Key Taps
-    </button>
-
-    <button onclick="loadGame('Lock/index.html')">
-      🔓 Lock Pick
-    </button>
-
-    <button onclick="loadGame('Sapot/index.html')">
-      🕸️ Sapot Untangle
-    </button>
-
-    <button onclick="loadGame('Typing accuracy/index.html')">
-      💻 Typing Accuracy
-    </button>
-
-    <!-- ===================================
-         NEW AMMUNATION MINIGAME
-    =================================== -->
-
-<button onclick="loadGame('Ammunition/index.html')">
-  🔫 Ammunition Sequence Memory
-</button>
-  </div>
-
-  <!-- ===================================
-       GAME DISPLAY CONTAINER
-  =================================== -->
-
-  <div id="game-container">
-
-    <div id="welcome-text">
-      SELECT A TRAINING MODULE
+  <div class="hud">
+    <div>
+      <div class="score-number" id="scoreTop">0</div>
+      <small>SCORE</small>
     </div>
 
-    <iframe
-      id="game-frame"
-      src=""
-      title="Training Minigame"
-      frameborder="0">
-    </iframe>
+    <div class="stats">
+      Best <b id="bestTop">0</b> ·
+      Misses <b id="misses">0/3</b> ·
+      Wrong <b id="wrong">0/3</b>
+    </div>
+  </div>
+
+  <div class="stage" id="stage">
+
+    <div class="lanes">
+      <div class="lane"></div>
+      <div class="lane"></div>
+      <div class="lane"></div>
+      <div class="lane"></div>
+      <div class="lane"></div>
+      <div class="lane"></div>
+    </div>
+
+    <div id="notes"></div>
+
+    <div class="hit-line" id="hitLine"></div>
+
+    <div class="keyboard">
+      <button type="button" data-lane="0">A</button>
+      <button type="button" data-lane="1">S</button>
+      <button type="button" data-lane="2">D</button>
+      <button type="button" data-lane="3">J</button>
+      <button type="button" data-lane="4">K</button>
+      <button type="button" data-lane="5">L</button>
+    </div>
+
+    <div class="overlay active" id="overlay">
+      <h2 id="overlayTitle">RHYTHM LOCK</h2>
+
+      <p id="overlayMessage">
+        Hit each neon tile as it crosses
+        the glowing cyan line.
+      </p>
+
+      <button type="button" id="startBtn">
+        START GAME
+      </button>
+    </div>
 
   </div>
 
-  <!-- ===================================
-       GAME LOADER
-  =================================== -->
+  <div class="bottom-score">
+    Score: <b id="scoreBottom">0</b> ·
+    Best: <b id="bestBottom">0</b>
+  </div>
 
-  <script>
+  <div class="progress">
+    <div id="progressFill"></div>
+  </div>
 
-    function loadGame(path) {
+  <div class="combo" id="combo">
+    Combo: 0 · Max: 0
+  </div>
 
-      const frame =
-        document.getElementById("game-frame");
+  <p class="instructions">
+    Press A, S, D, J, K, L when notes touch the cyan line
+  </p>
 
-      const welcome =
-        document.getElementById("welcome-text");
+  <div class="controls">
 
-      // Load selected minigame
-      frame.src = path;
+    <select id="difficulty" aria-label="Difficulty">
+      <option value="easy">Easy (1×)</option>
+      <option value="normal" selected>Normal (2×)</option>
+      <option value="hard">Hard (4×)</option>
+    </select>
 
-      // Hide welcome message
-      welcome.style.display = "none";
+    <button type="button" id="pauseBtn" disabled>
+      Pause
+    </button>
 
-      // Focus iframe after loading
-      frame.onload = () => {
-        frame.focus();
-      };
+    <button type="button" id="restartBtn">
+      Restart
+    </button>
 
-    }
+    <button type="button" id="soundBtn">
+      Sound: Off
+    </button>
 
-  </script>
+  </div>
+
+</main>
+
+<script src="script.js"></script>
 
 </body>
 </html>
