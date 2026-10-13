@@ -1,0 +1,119 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#030711">
+
+  <title>Ammunation | Neon Sequence Memory</title>
+
+  <link rel="stylesheet" href="style.css">
+  <script defer src="script.js"></script>
+</head>
+
+<body>
+  <main class="game"
+        aria-label="Ammunation sequence memory minigame">
+
+    <div class="top-light" aria-hidden="true"></div>
+
+    <header class="game-header">
+      <div class="eyebrow">
+        <span class="signal-dot"></span>
+        AMMUNATION // SECURITY TERMINAL
+        <span class="signal-dot"></span>
+      </div>
+
+      <h1>SEQUENCE MEMORY</h1>
+
+      <p>
+        Remember the glowing locations.
+        Select numbers 1–8 in order.
+      </p>
+    </header>
+
+    <!-- GAME STATUS -->
+    <div class="hud" aria-label="Game status">
+
+      <div class="hud-cell">
+        <span class="hud-label">ROUND</span>
+        <strong id="roundText">
+          01 <span>/ 03</span>
+        </strong>
+      </div>
+
+      <div class="hud-cell hud-phase">
+        <span class="hud-label">SYSTEM</span>
+        <strong id="phaseText">STANDBY</strong>
+      </div>
+
+      <div class="hud-cell hud-time">
+        <span class="hud-label">TIME LEFT</span>
+        <strong id="timeText">
+          7.0<span>s</span>
+        </strong>
+      </div>
+
+    </div>
+
+    <!-- 7X7 BOARD -->
+    <section class="board"
+             aria-label="Seven by seven grid">
+
+      <div class="corner corner-tl"></div>
+      <div class="corner corner-tr"></div>
+      <div class="corner corner-bl"></div>
+      <div class="corner corner-br"></div>
+
+      <div id="grid"
+           class="grid"
+           role="group"
+           aria-label="Memory squares">
+      </div>
+
+    </section>
+
+    <!-- INSTRUCTIONS -->
+    <div id="instruction"
+         class="instruction"
+         role="status"
+         aria-live="polite">
+      Press START GAME to begin the sequence.
+    </div>
+
+    <!-- TIMER -->
+    <div class="progress-meta">
+      <span>MEMORY PROTOCOL</span>
+      <span>7S MEMORISE / 7S RECALL</span>
+    </div>
+
+    <div class="timer-track" aria-hidden="true">
+      <div id="timerBar" class="timer-bar"></div>
+    </div>
+
+    <!-- CONTROLS -->
+    <div class="controls">
+
+      <span class="controls-hint">
+        <span class="tiny-dot"></span>
+        7 × 7 GRID
+        <span class="separator">·</span>
+        8 NUMBERS
+        <span class="separator">·</span>
+        3 ROUNDS
+      </span>
+
+      <button id="startBtn"
+              class="start-button"
+              type="button">
+        START GAME
+        <span aria-hidden="true">↗</span>
+      </button>
+
+    </div>
+
+  </main>
+</body>
+</html>

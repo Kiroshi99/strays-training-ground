@@ -1,0 +1,695 @@
+
+/* ==========================================
+   AMMUNATION - XENON NEON MEMORY GAME
+   7x7 GRID | INSTANT RANDOM BLINKING
+========================================== */
+
+:root {
+  --bg: #030711;
+  --panel: #060d19;
+  --tile: #0d2235;
+  --tile-border: #24556f;
+  --cyan: #30edff;
+  --cyan-deep: #007d98;
+  --gold: #ffc548;
+  --magenta: #ed36f8;
+  --text: #e8f6ff;
+}
+
+/* GLOBAL RESET */
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+
+  display: grid;
+  place-items: center;
+  padding: 24px 12px;
+
+  color: var(--text);
+  font-family: Consolas, "Courier New", monospace;
+
+  background:
+    radial-gradient(
+      ellipse at 50% 8%,
+      #123454 0%,
+      transparent 47%
+    ),
+    radial-gradient(
+      ellipse at 50% 100%,
+      #26114255 0%,
+      transparent 55%
+    ),
+    linear-gradient(
+      180deg,
+      #070d16,
+      #03050e 75%
+    );
+}
+
+/* ==========================================
+   MAIN GAME PANEL
+========================================== */
+
+.game {
+  position: relative;
+
+  width: min(96vw, 550px);
+  padding: 24px 21px 18px;
+
+  background: linear-gradient(
+    155deg,
+    #0c1622 0%,
+    #050a13 56%,
+    #070510 100%
+  );
+
+  border: 1px solid #35e8ff88;
+  border-radius: 17px;
+
+  box-shadow:
+    0 0 0 1px #05d6f814,
+    0 0 35px #00e5ff23,
+    0 20px 80px #000a,
+    inset 0 0 27px #00a6ff08;
+
+  overflow: hidden;
+}
+
+/* TOP NEON LINE */
+
+.top-light {
+  position: absolute;
+
+  top: 0;
+  left: 16%;
+
+  width: 68%;
+  height: 2px;
+
+  background: linear-gradient(
+    90deg,
+    transparent,
+    #25f2ff,
+    #df35fd,
+    transparent
+  );
+
+  box-shadow: 0 0 16px #29eaff;
+}
+
+/* ==========================================
+   GAME HEADER
+========================================== */
+
+.game-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.eyebrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 10px;
+
+  color: #76c4d8;
+
+  font-size: 9px;
+  font-weight: bold;
+  letter-spacing: 2.1px;
+}
+
+.signal-dot,
+.tiny-dot {
+  display: inline-block;
+  flex: none;
+
+  width: 6px;
+  height: 6px;
+
+  border-radius: 50%;
+
+  background: var(--cyan);
+  box-shadow: 0 0 9px var(--cyan);
+}
+
+h1 {
+  margin: 10px 0 7px;
+
+  color: var(--cyan);
+
+  font-size: clamp(20px, 5vw, 25px);
+  font-weight: 800;
+  letter-spacing: 3px;
+
+  text-shadow:
+    0 0 9px #36eaffaa,
+    0 0 25px #00cfff80;
+}
+
+.game-header p {
+  margin: 0;
+
+  color: #9eb5c8;
+
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+/* ==========================================
+   ROUND / SYSTEM / TIME HUD
+========================================== */
+
+.hud {
+  display: grid;
+
+  grid-template-columns: 1fr 1.35fr 1fr;
+
+  gap: 8px;
+  margin-bottom: 13px;
+}
+
+.hud-cell {
+  min-width: 0;
+  padding: 11px 10px 9px;
+
+  text-align: center;
+
+  background: linear-gradient(
+    140deg,
+    #102b40b9,
+    #081323
+  );
+
+  border: 1px solid #246884;
+  border-radius: 7px;
+
+  box-shadow:
+    inset 0 1px 8px #10b9ee16;
+}
+
+.hud-label {
+  display: block;
+  margin-bottom: 5px;
+
+  color: #85a8bc;
+
+  font-size: 9px;
+  letter-spacing: 1.5px;
+}
+
+.hud-cell strong {
+  color: var(--gold);
+
+  font-size: 18px;
+  letter-spacing: 1px;
+  white-space: nowrap;
+}
+
+.hud-cell strong span {
+  color: #6d91a5;
+  font-size: 12px;
+}
+
+.hud-phase strong {
+  color: var(--cyan);
+  font-size: 13px;
+
+  text-shadow:
+    0 0 10px #23eaff77;
+}
+
+.hud-time strong {
+  color: #e9faff;
+}
+
+.hud-time strong span {
+  color: #a7c0cb;
+}
+
+/* ==========================================
+   NEON GRID CONTAINER
+========================================== */
+
+.board {
+  position: relative;
+  padding: 12px;
+
+  background: #030b16;
+
+  border: 1px solid #2eeaff;
+  border-radius: 11px;
+
+  box-shadow:
+    0 0 19px #16dffb1c,
+    inset 0 0 18px #00d5ff0b;
+}
+
+/* GLOWING CORNERS */
+
+.corner {
+  position: absolute;
+
+  width: 18px;
+  height: 18px;
+
+  pointer-events: none;
+
+  border-color: var(--cyan);
+  border-style: solid;
+
+  filter:
+    drop-shadow(0 0 5px #37eaff);
+}
+
+.corner-tl {
+  top: -1px;
+  left: -1px;
+
+  border-width: 2px 0 0 2px;
+  border-top-left-radius: 10px;
+}
+
+.corner-tr {
+  top: -1px;
+  right: -1px;
+
+  border-width: 2px 2px 0 0;
+  border-top-right-radius: 10px;
+}
+
+.corner-bl {
+  bottom: -1px;
+  left: -1px;
+
+  border-width: 0 0 2px 2px;
+  border-bottom-left-radius: 10px;
+}
+
+.corner-br {
+  bottom: -1px;
+  right: -1px;
+
+  border-width: 0 2px 2px 0;
+  border-bottom-right-radius: 10px;
+}
+
+/* ==========================================
+   7X7 GRID
+========================================== */
+
+.grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(7, minmax(0, 1fr));
+
+  gap: 6px;
+}
+
+/* DEFAULT BLUE SQUARES */
+
+.tile {
+  display: grid;
+  place-items: center;
+
+  min-width: 0;
+  padding: 0;
+
+  aspect-ratio: 1;
+
+  border: 1px solid var(--tile-border);
+  border-radius: 6px;
+
+  background: linear-gradient(
+    145deg,
+    #081a2b,
+    #12314b
+  );
+
+  box-shadow:
+    inset 0 0 7px #04101f,
+    0 0 4px #0ad7ff09;
+
+  color: transparent;
+
+  font:
+    800 clamp(14px, 4vw, 22px)
+    Consolas, monospace;
+
+  user-select: none;
+
+  -webkit-tap-highlight-color: transparent;
+
+  cursor: default;
+  outline-offset: 2px;
+}
+
+.tile:disabled {
+  opacity: 1;
+}
+
+/* ==========================================
+   NUMBERED SQUARES - OFF / BLACK
+========================================== */
+
+/*
+   During memorisation:
+   Inactive numbered tiles turn black.
+   Empty squares remain dark blue.
+*/
+
+.tile.blink-tile {
+  background: #000000;
+
+  color: transparent;
+
+  border-color: #1f4e66;
+
+  box-shadow:
+    inset 0 0 8px #000000;
+
+  animation: none !important;
+  transition: none !important;
+}
+
+/* ==========================================
+   NUMBERED SQUARES - ON / GOLD
+========================================== */
+
+/*
+   Four random numbered squares glow.
+   They remain visible for 1 second.
+   No fading.
+*/
+
+.tile.blink-tile.lit {
+  background: #ffcb55;
+
+  color: #ffffff;
+
+  border-color: #fff0b4;
+
+  text-shadow:
+    0 0 8px #ffffff;
+
+  box-shadow:
+    0 0 15px #ffab00c9,
+    0 0 25px #ffb73355,
+    inset 0 0 12px #ffffff77;
+
+  animation: none !important;
+  transition: none !important;
+}
+
+/* ==========================================
+   CLICKING PHASE
+========================================== */
+
+.tile.clickable {
+  cursor: pointer;
+}
+
+.tile.clickable:hover {
+  background: #173d56;
+
+  border-color: var(--cyan);
+
+  box-shadow:
+    0 0 10px #15e8ff70;
+}
+
+.tile.clickable:focus-visible {
+  outline: 2px solid #8cf8ff;
+}
+
+.tile.clickable:active {
+  transform: scale(0.96);
+}
+
+/* CORRECT CLICK - GREEN */
+
+.tile.correct {
+  background: #15bc7e;
+
+  color: #ffffff;
+
+  border-color: #84ffd7;
+
+  box-shadow:
+    0 0 19px #19fdb397,
+    inset 0 0 9px #d9fff366;
+}
+
+/* WRONG CLICK - RED */
+
+.tile.wrong {
+  background: #e13a64;
+
+  color: #ffffff;
+
+  border-color: #ffc0d3;
+
+  box-shadow:
+    0 0 17px #ff256cba;
+}
+
+/* ==========================================
+   INSTRUCTION PANEL
+========================================== */
+
+.instruction {
+  margin-top: 13px;
+  min-height: 43px;
+
+  padding: 12px 10px;
+
+  border: 1px solid #1a5672;
+  border-radius: 6px;
+
+  background: #030913;
+
+  color: #d5edff;
+
+  text-align: center;
+  font-size: 11px;
+  line-height: 1.5;
+
+  box-shadow:
+    inset 0 0 10px #00efff06;
+}
+
+/* SUCCESS */
+
+.instruction.success {
+  color: #66ffd7;
+  border-color: #19da9e;
+}
+
+/* FAILURE */
+
+.instruction.failure {
+  color: #ff81a9;
+  border-color: #e44c87;
+}
+
+/* ==========================================
+   TIMER DETAILS
+========================================== */
+
+.progress-meta {
+  display: flex;
+  justify-content: space-between;
+
+  margin: 13px 1px 6px;
+
+  color: #69a9c3;
+
+  font-size: 9px;
+  letter-spacing: 0.5px;
+}
+
+/* TIMER TRACK */
+
+.timer-track {
+  height: 8px;
+
+  background: #0f2432;
+
+  border: 1px solid #22536b;
+  border-radius: 100px;
+
+  overflow: hidden;
+}
+
+/* MAGENTA TO CYAN TIMER */
+
+.timer-bar {
+  height: 100%;
+  width: 100%;
+
+  background: linear-gradient(
+    90deg,
+    #f539ee,
+    #8054fb 35%,
+    #20e8ff
+  );
+
+  box-shadow:
+    0 0 12px #15eaff;
+}
+
+/* ==========================================
+   CONTROLS
+========================================== */
+
+.controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.controls-hint {
+  color: #6f9caf;
+
+  font-size: 9px;
+  font-weight: bold;
+  letter-spacing: 0.4px;
+  line-height: 1.8;
+}
+
+.controls-hint .tiny-dot {
+  width: 5px;
+  height: 5px;
+  margin-right: 4px;
+}
+
+.separator {
+  color: #b45af8;
+}
+
+/* ==========================================
+   START / RESTART BUTTON
+========================================== */
+
+.start-button {
+  flex: none;
+  min-width: 158px;
+
+  padding: 12px 14px;
+
+  border: 1px solid #8bffff;
+  border-radius: 6px;
+
+  background: linear-gradient(
+    108deg,
+    #5d27eb,
+    #13d3ef
+  );
+
+  color: #f7ffff;
+
+  font:
+    800 12px Consolas, monospace;
+
+  letter-spacing: 1px;
+
+  text-shadow:
+    0 0 8px #08051b75;
+
+  box-shadow:
+    0 0 14px #08e6ff65,
+    inset 0 0 12px #ffffff1a;
+
+  cursor: pointer;
+
+  transition:
+    filter 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.start-button span {
+  padding-left: 4px;
+}
+
+.start-button:hover:not(:disabled) {
+  filter: brightness(1.25);
+
+  box-shadow:
+    0 0 22px #06e8ffaf;
+}
+
+.start-button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+
+  filter: grayscale(0.4);
+}
+
+/* ==========================================
+   MOBILE RESPONSIVE
+========================================== */
+
+@media (max-width: 470px) {
+
+  body {
+    padding: 10px 5px;
+  }
+
+  .game {
+    padding: 19px 11px 13px;
+    border-radius: 12px;
+  }
+
+  .game-header {
+    margin-bottom: 15px;
+  }
+
+  .eyebrow {
+    letter-spacing: 1px;
+    font-size: 8px;
+  }
+
+  .board {
+    padding: 7px;
+  }
+
+  .grid {
+    gap: 4px;
+  }
+
+  .tile {
+    border-radius: 4px;
+  }
+
+  .hud-cell {
+    padding: 9px 5px 7px;
+  }
+
+  .hud-cell strong {
+    font-size: 15px;
+  }
+
+  .hud-phase strong {
+    font-size: 11px;
+  }
+
+  .controls-hint {
+    font-size: 8px;
+  }
+
+  .start-button {
+    min-width: 128px;
+    padding: 11px 8px;
+    font-size: 10px;
+  }
+}
