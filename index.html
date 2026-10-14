@@ -229,11 +229,19 @@
     </button>
 
     <!-- ===================================
-         NEW RHYTHM LOCK MINIGAME
+         RHYTHM LOCK MINIGAME
     =================================== -->
 
     <button onclick="loadGame('Piano/index.html')">
       🎹 Rhythm Lock
+    </button>
+
+    <!-- ===================================
+         NEW WORD BREAKER MINIGAME
+    =================================== -->
+
+    <button onclick="loadGame('Word guess/index.html')">
+      🔤 Word Breaker
     </button>
 
   </div>
@@ -272,14 +280,12 @@
       // Hide welcome message
       welcome.style.display = "none";
 
-      // Load the selected minigame
-      frame.src = path;
-
-      // Focus iframe for keyboard gameplay
+      // Load selected minigame
       frame.onload = () => {
         frame.focus();
       };
 
+      frame.src = path;
     }
   </script>
 
