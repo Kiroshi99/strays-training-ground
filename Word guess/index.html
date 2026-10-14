@@ -1,0 +1,89 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+  <title>STRAYS | Word Breaker</title>
+
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
+</head>
+
+<body>
+
+<main class="container">
+
+  <h1>WORD <span>BREAKER</span></h1>
+
+  <p class="subtitle">
+    Guess the hidden 5-letter word.
+    You have 6 attempts.
+  </p>
+
+  <!-- GAME STATS -->
+  <div class="stats">
+    <div>
+      GUESS:
+      <strong id="attempt">1 / 6</strong>
+    </div>
+
+    <div>
+      REMAINING:
+      <strong id="remaining">6</strong>
+    </div>
+  </div>
+
+  <!-- ACTIVE GUESS: FIVE BOXES -->
+  <div id="board"></div>
+
+  <!-- STATUS -->
+  <div id="message" aria-live="polite">
+    Type your first guess!
+  </div>
+
+  <!-- NEW GAME -->
+  <button id="newGame" type="button">
+    ↻ NEW GAME
+  </button>
+
+  <!-- GUESS HISTORY -->
+  <section class="history-section">
+
+    <h2>GUESS HISTORY</h2>
+
+    <div id="history">
+      <p class="empty-history">
+        No guesses yet.
+      </p>
+    </div>
+
+  </section>
+
+  <!-- LEGEND -->
+  <div class="legend">
+
+    <span>
+      <i class="dot correct"></i> Correct
+    </span>
+
+    <span>
+      <i class="dot present"></i> Wrong Position
+    </span>
+
+    <span>
+      <i class="dot absent"></i> Not in Word
+    </span>
+
+  </div>
+
+</main>
+
+<footer>
+  STRAYS EL FAMILIA • WORD TRAINING
+</footer>
+
+</body>
+</html>
